@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+
+<h2>Dashboard</h2>
+<br/>
+
+<div class="card">
+<div class="card-header">
+{{ current_user.name }}
+</div>
+<div class="card-body">
+
+<p class="card-text">
+
+<div class="container">
+<div class="row">
+	<div class="col-8">
+
+<strong>Name:</strong>
+{{name_to_update.first_name }}<br/>
+
+<strong>Username:</strong>
+{{ name_to_update.last_name }}<br/>
+
+<strong>User Id:</strong>
+{{ name_to_update.first_name }}<br/>
+
+<strong>Email:</strong>
+{{ name_to_update.first_name }}<br/>
+
+<strong>Favorite Color:</strong>
+{{ name_to_update.first_name }}<br/>
+
+<strong>About Author:</strong>
+{{ name_to_update.first_name }}<br/>
+
+<strong>Profile Pic:</strong>
+{{ name_to_update.profile_pic }}<br/>
+
+<strong>Date Joined:</strong>
+{{ name_to_update.date_added }}<br/>
+
+
+
+
+	
+</p>
+<!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
+
+
+<br/><br/>
+
+
+</div>
+<div class="col-4">
+	{% if name_to_update.profile_pic %}
+
+	<img src="{{ url_for('static', filename='images/' + name_to_update.profile_pic)}}" width="200" align="right">
+	
+	{% else %}
+
+	<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+
+	{% endif %}
+
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+	<h1>EDIT SAVE RECORDS</h1>
+	<br/>
+<div class="shadow p-3 mb-5 bg-body rounded">
+	<form action="/edit_crime/{{ name_to_update.id }}" method="POST" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+
+
+		
+		{{ form.first_name.label(class="form-label") }}
+
+		{{ form.first_name(class="form-control", value=name_to_update.first_name) }}	
+		<br/>
+		
+		{{ form.last_name.label(class="form-label") }}
+
+		{{ form.last_name(class="form-control", value=name_to_update.last_name) }}	
+
+		<br/>
+		{{ form.submit(class="btn btn-secondary") }}
+
+		<a href="{{ url_for('delete', id=id)}}" class="btn btn-danger">Delete</a>
+
+
+	</form>
+</div>
+<br/><br/><br/>
+
+
+
+
+{% endblock %}

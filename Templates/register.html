@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+
+
+{% if name %}
+	<h1>User Added!</h1>
+	<br/><br/>
+<table class="table table-hover table-bordered table-striped">
+
+
+</table>
+	
+
+{% else %}
+	<h1>REGISTER OFFICER:</h1>
+	<br/>
+<div class="shadow p-3 mb-5 bg-body rounded">
+	<form method="POST" enctype="multipart/form-data">
+		{{ form.csrf_token }}
+
+		<br/>
+
+		{{ form.batchno.label(class="form-label") }}
+
+		{{ form.batchno(class="form-control") }}
+		<br/>
+
+		{{ form.first_name.label(class="form-label") }}
+
+		{{ form.first_name(class="form-control") }}
+		<br/>
+
+		{{ form.last_name.label(class="form-label") }}
+
+		{{ form.last_name(class="form-control") }}
+		<br/>
+		{{ form.gender.label(class="form-label") }}
+
+		{{ form.gender(class="form-control") }}
+		<br/>
+		{{ form.station.label(class="form-label") }}
+
+		{{ form.station(class="form-control") }}
+		<br/>
+		
+		{{ form.dob.label(class="form-label") }}
+
+		{{ form.dob(class="form-control") }}
+		<br/>
+		
+		{{ form.rank.label(class="form-label") }}
+
+		{{ form.rank(class="form-control") }}
+		<br/>
+		
+		<!-- {{ form.active.label(class="form-label") }}
+
+		{{ form.active() }} -->
+		<br/>
+		
+		{{ form.password_hash.label(class="form-label") }}
+
+		{{ form.password_hash(class="form-control") }}
+		<br/>
+
+		{{ form.password_hash2.label(class="form-label") }}
+
+		{{ form.password_hash2(class="form-control") }}
+		
+		<br/>
+		{{ form.profile_pic.label(class="form-label") }}
+
+		{{ form.profile_pic(class="form-control") }}
+		<br/>
+
+		{{ form.submit(class="btn btn-secondary") }}
+
+
+	</form>
+</div>
+<br/><br/><br/>
+<table class="table table-hover table-bordered table-striped">
+
+
+
+</table>
+{% endif %}
+
+{% endblock %}

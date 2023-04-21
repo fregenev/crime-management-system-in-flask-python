@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+<script src="../static/js/app.js"></script>
+<h2>Dashboard</h2>
+<br/>
+
+<div class="card">
+<div class="card-header">
+{{ current_user.name }}
+</div>
+<div class="card-body">
+
+<p class="card-text">
+
+<div class="container">
+<div class="row">
+	<div class="col-8">
+
+<strong>Name:</strong>
+{{name_to_update.name }}<br/>
+
+<strong>Username:</strong>
+{{ name_to_update.username }}<br/>
+
+<strong>User Id:</strong>
+{{ name_to_update.id }}<br/>
+
+<strong>Email:</strong>
+{{ name_to_update.email }}<br/>
+
+<strong>Favorite Color:</strong>
+{{ name_to_update.favorite_color }}<br/>
+
+<strong>About Author:</strong>
+{{ name_to_update.about_author }}<br/>
+
+<strong>Profile Pic:</strong>
+{{ name_to_update.profile_pic }}<br/>
+
+<strong>Date Joined:</strong>
+{{ name_to_update.date_added }}<br/>
+
+
+
+
+	
+</p>
+<!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
+
+
+<br/><br/>
+
+
+</div>
+<div class="col-4">
+	{% if name_to_update.profile_pic %}
+
+	<img src="{{ url_for('static', filename='images/' + name_to_update.profile_pic)}}" width="200" align="right">
+	
+	{% else %}
+
+	<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+
+	{% endif %}
+
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+ 
+{% if id != current_user.id %} 
+
+	<h1>Update User...</h1>
+	<br/>
+<div class="shadow p-3 mb-5 bg-body rounded">
+	<form action="/update/{{ name_to_update.id }}" method="POST" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+
+		{{ form.rank.label(class="form-label") }}
+
+		{{ form.rank(class="form-control", value=name_to_update.rank) }}
+		
+		<br/>
+
+		{{ form.station.label(class="form-label") }}
+
+		{{ form.station(class="form-control", value=name_to_update.station) }}
+		
+
+		<br/>
+		
+		{{ form.submit(class="btn btn-secondary") }}
+
+		<a href="{{ url_for('delete', id=id)}}" class="btn btn-danger">Delete</a>
+
+
+	</form>
+</div>
+<br/><br/><br/>
+
+<!-- {% else %}
+ <div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  Sorry! You Can't Edit This User...
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	<h2>Access Denied!</h2>
+	<p>Sorry, you cannot access this user profile...</p>
+
+{% endif %} -->
+
+
+{% endblock %}

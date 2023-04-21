@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+
+
+
+	<h2>Dashboard</h2>
+	<br/>
+
+	<div class="card">
+  <div class="card-header">
+   
+  </div>
+  <div class="card-body">
+   
+    <p class="card-text">
+
+<div class="container">
+	<div class="row">
+		<div class="col-8">
+		<strong>batchno:</strong>
+			{{ name_to_update.batchno }}<br/>
+
+    <strong>FIRST NAME:</strong>
+	{{ name_to_update.first_name }}<br/>
+
+	<strong>LAST NAME:</strong>
+	{{ name_to_update.last_name }}<br/>
+
+	<strong>rank:</strong>
+	{{ name_to_update.rank }}<br/>
+
+	<strong>dob:</strong>
+	{{ name_to_update.dob }}<br/>
+
+	<strong>gender:</strong>
+	{{ name_to_update.gender }}<br/>
+	
+	<strong>AGE</strong>
+	
+           
+	{{age}}
+	
+	<br/>
+	<strong>Profile Pic:</strong>
+	{{ name_to_update.profile_pic }}<br/>
+
+	<strong>Date Joined:</strong>
+	{{ name_to_update.date_added }}<br/>
+
+
+	
+
+    	
+    </p>
+    <!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
+
+    
+    
+	</div>
+	<div class="col-4">
+		{% if name_to_update.profile_pic %}
+
+		<img src="{{ url_for('static', filename='images/' + name_to_update.profile_pic)}}" width="200" align="right">
+		
+		{% else %}
+
+		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+
+		{% endif %}
+	
+	</div>
+	</div>
+	</div>
+
+
+  </div>
+</div>
+	
+
+	
+<br/>
+{% if current_user.id == 1 %}
+
+
+<div class="card">
+  <div class="card-header">
+    Update Profile
+  </div>
+  <div class="card-body">
+
+  	<form action="/dashboard/{{ name_to_update.id }}" method="POST" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+
+		{{ form.batchno.label(class="form-label") }}
+
+		{{ form.batchno(class="form-control", value=name_to_update.batchno) }}
+		<br/>
+		{{ form.hidden_tag() }}
+
+		{{ form.first_name.label(class="form-label") }}
+
+		{{ form.first_name(class="form-control", value=name_to_update.first_name) }}
+		<br/>
+		{{ form.hidden_tag() }}
+
+		{{ form.last_name.label(class="form-label") }}
+
+		{{ form.last_name(class="form-control", value=name_to_update.last_name) }}
+		<br/>
+		{{ form.hidden_tag() }}
+
+		{{ form.rank.label(class="form-label") }}
+
+		{{ form.rank(class="form-control", value=name_to_update.rank) }}
+		<br/>
+		{{ form.hidden_tag() }}
+
+		{{ form.station.label(class="form-label") }}
+
+		{{ form.station(class="form-control", value=name_to_update.station) }}
+		<br/>
+		{{ form.hidden_tag() }}
+
+		{{ form.password_hash.label(class="form-label") }}
+
+		{{ form.password_hash(class="form-control", value=name_to_update. password_hash) }}
+		<br/>
+		<!-- {{ form.hidden_tag() }}
+
+		{{ form.last_name.label(class="form-label") }}
+
+		{{ form.last_name(class="form-control", value=name_to_update.last_name) }} -->
+		<br/>
+		
+
+		
+
+		{{ form.profile_pic.label(class="form-label") }}
+
+		{{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
+		
+
+		<br/>
+		
+		{{ form.submit(class="btn btn-secondary btn-sm") }}
+			
+		{% endif %}
+		
+
+
+	</form>
+
+
+
+</div>
+
+	
+	
+
+
+</div>
+
+
+{% endblock %}

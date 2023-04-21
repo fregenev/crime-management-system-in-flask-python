@@ -1,0 +1,98 @@
+<link href="../static/dist/css/bootstrap.min.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg bg-dark">
+  <div class="container-fluid">
+    
+    <!-- <a class="navbar-brand" href="#">DATABASE</a> -->
+    <!-- <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
+      <!-- <span class="mr-2 d-none d-lg-inline text-gray-600 small"> {{ current_user.name }}</span> -->
+      {% if current_user.profile_pic %}
+
+		<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" img class="img-profile rounded-circle" width="60x60">
+		
+		{% else %}
+
+		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" img class="img-profile rounded-circle" width="200">
+
+		{% endif %}
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">   
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('index')}}">PROFILE</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            OFFICER
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{url_for('officer')}}">VIEW OFFICER</a></li>
+            <li><a class="dropdown-item" href="{{url_for('allofficer')}}">VIEW ALL OFFICER</a></li>
+            <li><a class="dropdown-item" href="{{url_for('register')}}">REGISTER OFFICER</a></li>
+            <!-- <li><hr class="dropdown-divider"></li> -->
+            <li><a class="dropdown-item" href="#">POLICE SATION</a></li>
+          </ul>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              RECORDS
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{url_for('view')}}">VIEW RECORDS</a></li>
+              <li><a class="dropdown-item" href="{{url_for('view_all')}}">VIEW ALL RECORDS</a></li>
+              <li><a class="dropdown-item" href="{{url_for('wanted')}}">MOST WANTED</a></li>
+              <!-- <li><hr class="dropdown-divider"></li> -->
+              <!-- <li><a class="dropdown-item" href="#">POLICE SATION</a></li> -->
+            </ul>
+
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('addcrime')}}">ADDCRIME</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('match')}}">MATCH</a>
+        </li> 
+        {%if current_user.batchno == "admin"%}
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="/admin">ADMIN</a>
+        </li>
+        {%endif%}
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="/send_message">MESSAGES</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="/map">MAP</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">wamted</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <h3 class="text-success">Welcome : {{current_user.first_name }} {{current_user.last_name }}</h3>
+        </li>
+      </ul>
+      
+        
+
+      </li>
+    </div>
+    <form method="POST" action="{{ url_for('search') }}">
+      <input type="text" name="search_term" placeholder="Enter your search term">
+      <select name="filter_option">
+        <option value="last_name">STATION</option>
+        <option value="first_name">FIRST_NAME</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+  </div>
+</div>
+<a href="{{url_for('logout')}}" class="btn btn-primary btn-block">Logout</a>
+</div> 
+</nav>
+<br>

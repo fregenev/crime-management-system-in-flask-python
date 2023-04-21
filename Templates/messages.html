@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+<marquee direction = "right" behavior ="alternate">contt</marquee>
+<h2>Received messages:</h2>
+{% for message in received_messages %}
+  <p>From: {{ message.sender.batchno }}
+    <!-- <img src="{{ url_for('static', filename='images/' + message.sender.profile_pic)}}" width="200" > -->
+    
+		<br>{{ message.text }}</p>
+{% endfor %}
+
+<h2>Sent messages:</h2>
+{% for message in sent_messages %}
+  <p>To: {{ message.recipient.batchno }}
+    <!-- <img src="{{ url_for('static', filename='images/' + message.recipient.profile_pic)}}" width="200" > -->
+    <br>{{ message.text }}</p>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fingerprint Scanner</title>
+  </head>
+  <body>
+    <h1>Fingerprint Scanner</h1>
+    <form action="" method="post">
+      {{ form.hidden_tag() }}
+      <div>
+        {{ form.name.label }} {{ form.name(size=32) }}
+      </div>
+      <div>
+        {{ form.submit() }}
+      </div>
+    </form>
+  </body>
+</html>

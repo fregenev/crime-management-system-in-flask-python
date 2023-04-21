@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Face Recognition</title>
+  </head>
+  <body>
+    <h1>Upload an image for face recognition</h1>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('detect') }}">
+      <input type="file" name="image" accept="image/*">
+      <input type="submit" value="Upload">
+    </form>
+  </body>
+</html>

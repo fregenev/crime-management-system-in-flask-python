@@ -1,0 +1,17 @@
+
+<div class="form-group">
+	<form method="post" action="/send_message">
+		{{ form.csrf_token }}
+		<br/>
+		<label for="emal">staa:</label>
+		{{ form.location(class="form-control")}}
+		{% for error in form.location.errors %}
+		  <span style="color: red;">[{{ error }}]
+		{% endfor %}
+		<br/>
+	
+		<br>
+		{{ form.submit(class="btn btn-success btn-block") }}
+
+	  </form>
+	  

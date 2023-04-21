@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+
+
+{% if name %}
+	<h1>User Added!</h1>
+	<br/><br/>
+<table class="table table-hover table-bordered table-striped">
+
+
+</table>
+	
+
+{% else %}
+	<h1>ADD CRME:</h1>
+	<br/>
+<div class="shadow p-3 mb-5 bg-body rounded">
+	<form method="POST" enctype="multipart/form-data">
+		#{{ form.hidden_tag() }}
+
+		<br/>
+
+		{{ form.first_name.label(class="form-label") }}
+
+		{{ form.first_name(class="form-control") }}
+		<br/>
+
+		{{ form.last_name.label(class="form-label") }}
+
+		{{ form.last_name(class="form-control") }}
+		<br/>
+
+		{{ form.mother_name.label(class="form-label") }}
+
+		{{ form.mother_name(class="form-control") }}
+		<br/>
+		{{ form.gender.label(class="form-label") }}
+
+		{{ form.gender(class="form-control") }}
+		<br/>
+		{{ form.crime_type.label(class="form-label") }}
+
+		{{ form.crime_type(class="form-control") }}
+		<br/>
+		
+		{{ form.dob.label(class="form-label") }}
+
+		{{ form.dob(class="form-control") }}
+		<br/>
+		
+		{{ form.wanted.label(class="form-label") }}
+
+		{{ form.wanted(class="form-control") }}
+		<br/>
+		
+		{{ form.profile_pic.label(class="form-label") }}
+
+		{{ form.profile_pic(class="form-control") }}
+		<br/>
+		
+		{{ form.profile_pic2.label(class="form-label") }}
+
+		{{ form.profile_pic2(class="form-control") }}
+		<br/>
+		<br/>
+		
+		{{ form.fingerprint.label(class="form-label") }}
+
+		{{ form.fingerprint(class="form-control") }}
+		<br/>
+
+		{{ form.submit(class="btn btn-secondary") }}
+
+
+	</form>
+</div>
+<br/><br/><br/>
+<table class="table table-hover table-bordered table-striped">
+
+
+
+</table>
+{% endif %}
+
+{% endblock %}

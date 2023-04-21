@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fingerprint Match</title>
+</head>
+<body>
+    {% if best_match and best_match.profile_pic %}
+    <h1>Fingerprint Match Result</h1>
+    <img src="data:image/png;base64,{{ result }}" />
+   
+    {{ filename }}
+    <p>Best match: {{ best_match.fingerprint}}</p>
+    <p>Best match: {{ best_match.profile_pic2}}</p>
+    <p>Matching score: {{ score }}%</p>
+    <img src="{{ url_for('static', filename='images/' + best_match.profile_pic)}}" width="200" align="right">
+		
+
+		<img src="{{ url_for('static', filename='images/' + best_match.profile_pic2)}}" width="200" align="right"> 
+
+		<img src="{{ url_for('static', filename='images/fingerprint/' +best_match.fingerprint)}}" width="200" align="right"> 
+    {% elif filename not in best_match %} 
+    <p>No match found</p>
+    {% endif %}
+    <h2>Match a fingerprint</h2>
+
+    <form action="/match" method="post" enctype="multipart/form-data">
+        <label for="file">Fingerprint image:</label>
+        <input type="file" id="file" name="file"><br><br>
+
+        <input type="submit" value="Match">
+    </form>
+</body>
+</html>
+    
+</body>
+</html>
+{% endblock %}
