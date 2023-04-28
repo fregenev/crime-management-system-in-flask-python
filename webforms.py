@@ -28,7 +28,7 @@ class PoliceForm(FlaskForm):
 	active = BooleanField('active', default="checked")
 	rank = SelectField("rank", choices=[('cpp', 'c++'), ('py', 'python'), ('ja','java')], validators=[DataRequired()])
 	gender = RadioField("Gender", choices=[('MALE', 'Male'), ('FEMALE', 'Female')], validators=[DataRequired()])
-	station = SelectField("station", choices=[('del', 'deltasate'), ('ab', 'abj'), ('lag','lagos')], validators=[DataRequired()])
+	# station = SelectField("station", choices=[('del', 'deltasate'), ('ab', 'abj'), ('lag','lagos')], validators=[DataRequired()])
 	dob = DateField("dob", validators=[DataRequired()])
 	password_hash = PasswordField('Password', validators=[DataRequired(), EqualTo('password_hash2', message='Passwords Must Match!')])
 	password_hash2 = PasswordField('Confirm Password', validators=[DataRequired()])

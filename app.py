@@ -43,7 +43,7 @@ app.config['UPLOAD_FINGER'] = UPLOAD_FOLDER2
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///our_users.db'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/our_users'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/our_users'
 
 # db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
@@ -186,9 +186,13 @@ def index():
 #@login_required
 def view_all():
    # profiles = Crimerecords.query.all()
-    age=Crimerecords.age
-    return render_template('view_all.html', crime= Crimerecords.query.all(),age=age)
+    return render_template('view_all.html', crime= Crimerecords.query.all())
 
+@app.route('/station')
+#@login_required
+def station():
+   # profiles = Crimerecords.query.all()
+    return render_template('station.html', station= Location.query.all())
 
 @app.route('/view')
 #@login_required
@@ -434,7 +438,7 @@ def register():
                last_name=form.last_name.data, 
                rank=form.rank.data, 
                gender=form.gender.data,
-               station=form.station.data,
+               station=current_user.station,
                dob=form.dob.data,
                profile_pic= pic_name, 
                password_hash=hashed_pw, active=True)
@@ -450,7 +454,6 @@ def register():
 		form.profile_pic.data = ''
 		form.last_name.data = ''
 		form.gender.data = ''
-		form.station.data = ''
 		form.dob.data = ''
 		form.rank.data = ''
 		form.password_hash.data = ''
@@ -620,10 +623,14 @@ class MessageView(ModelView):
 	can_export = True
 	can_view_details = True
 
+class LocationView(ModelView):
+	can_export = True
+	can_view_details = True
+
 admin.add_view(DefaultModelView(User, db.session))
 admin.add_link(MenuLink(name='Logout', category='', url='/logout'))
 admin.add_view(FileAdmin(path, '/static/', name='Static Files'))
-# admin.add_view(UserView(User, db.session))
+admin.add_view(LocationView(Location, db.session))
 # admin.add_view(NotificationsView(name='Notifications', endpoint='notify'))
 admin.add_view(MessageView(Message, db.session))
 admin.add_view(CrimerecordsView(Crimerecords, db.session))
@@ -851,4 +858,4 @@ def verify_password(self, password):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host="0.0.0.0")    
+    app.run(host="0.0.0.0")
