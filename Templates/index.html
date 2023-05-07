@@ -13,130 +13,143 @@
 
 
 
-	<h2>Dashboard</h2>
-	<br/>
-
-	<div class="card">
-  <div class="card-header">
-    {{ current_user.name }}
-  </div>
-  <div class="card-body">
-   
-    <p class="card-text">
-
-<div class="container">
-	<div class="row">
-		<div class="col-8">
-
-    <strong>batchno:</strong>
-	{{ current_user.batchno }}<br/>
-
-	<strong>first_name:</strong>
-	{{ current_user.first_name }}<br/>
-
-	<strong>last_name:</strong>
-	{{ current_user.last_name }}<br/>
-
-	<strong>gender:</strong>
-	{{ current_user.gender }}<br/>
-
-	<strong>station:</strong>
-	{{ current_user.station }}<br/>
-
-	<strong>dob:</strong>
-	{{ current_user.dob }}<br/>
-
-    <strong>rank:</strong>
-	{{ current_user.rank }}<br/>
-
-    <strong>password_hash:</strong>
-	{{ current_user.password_hash }}<br/>
-
-	<strong>Profile Pic:</strong>
-	{{ current_user.profile_pic }}<br/>
-
-	<strong>Date Joined:</strong>
-	{{ current_user.date_added }}<br/>
-
-    	
-    </p>
-    <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Logout</a>
-<!-- 
-    <a href="{{ url_for('update', id=current_user.id)}}" class="btn btn-secondary btn-sm">Update Profile</a>
-
-    <a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger btn-sm">Delete</a> -->
-    <br/><br/>
-
-	  
-    <br/>
-    
-	</div>
-	<div class="col-4">
-		{% if current_user.profile_pic %}
-
-		<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="200" align="right">
-		
-		{% else %}
-
-		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
-
-		{% endif %}
-	
-	</div>
-	</div>
-	</div>
-
-
-  </div>
-</div>
-	
-<div class="container-fluid"  >
-	<div class="table-wrapper">
-		<div class="table-title">
-			<div class="row">
-				
-		
-		</div>
-		<table class="table table-bordered">
-			<thead>
-				
-		<th>sender</th>
-		<th>message</th>
-		
-	</tr>
-</thead>
-<tbody>
-	{% for message in received_messages %}
-	<tbody>
-<td>From: {{ message.sender.batchno }}</td>
-<td>{{ message.text }}</td>
-		<td>
-			<a href="{{ url_for('dashboard', id=message['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> VIEW</a> |
-	</td>
-</tr>
-{% endfor %}		
+<h2>Dashboard</h2>
 <br/>
 
-<!--  <form method="post" action="/">
-	{{ form.csrf_token }}
-	{{ form.recipient_id.label(class="form-label") }} {{ form.recipient_id(class="form-control") }}
-	{% for error in form.recipient_id.errors %}
-	  <span style="color: red;">[{{ error }}]</span>
-	{% endfor %}
-	<br>
-	{{ form.text.label (class="form-label")}} {{ form.text (class="form-control")}}
-	{% for error in form.text.errors %}
-	  <span style="color: red;">[{{ error }}]</span>
-	{% endfor %}
-	<br>
-	<input type="submit" value="Send message">
-  </form>
-	-->
+<div class="card">
+<div class="card-header">
+{{ current_user.name }}
+</div>
+<div class="card-body">
+
+<p class="card-text">
+
+<div class="container">
+<div class="row">
+	<div class="col-8">
+
+<strong>BATCH_NUMBER:</strong>
+{{ current_user.batchno }}<br/>
+
+<strong>FIRST_NAME:</strong>
+{{ current_user.first_name }}<br/>
+
+<strong>LAST_NAME:</strong>
+{{ current_user.last_name }}<br/>
+
+<strong>RANK:</strong>
+{{ current_user.rank }}<br/>
+
+<strong>STATION:</strong>
+{{ current_user.station_id }}<br/>
+
+<strong>SUPERVISOR:</strong>
+{{ current_user.Supervisor_id }}<br/>
+
+<strong>PERSONAL_EMAIL:</strong>
+{{ current_user.Personal_email }}<br/>
+
+<strong>Date Joined:</strong>
+{{ current_user.date_added }}<br/>
+
+
+
+
 	
-  <div class="col-sm-8"><h2>MESSAGES <b>Received</b></h2></div>
+</p>
+<a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a>
+
+<a href="{{ url_for('update', id=current_user.id)}}" class="btn btn-secondary btn-sm">Update Profile</a>
+
+<a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger btn-sm">Delete</a>
+<br/><br/>
+
+
+</div>
+<div class="col-4">
+	{% if current_user.profile_pic %}
+
+	<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="200" align="right">
+	
+	{% else %}
+
+	<img src="{{ url_for('static', filename='images/default_photo.jpg')}}" width="200" align="right">
+
+	{% endif %}
+
+</div>
+</div>
+</div>
+		
+
+	
+
+
+
+
 
 
 </div>
 
+
+
+
+
+</div>
+
+
+	
+<br/>
+
+<div class="card">
+  <div class="card-header">
+    Update Profile
+  </div>
+  <div class="card-body">
+
+  	<form  method="POST" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+
+
+
+		
+		
+		
+		<br/>
+
+		
+
+		{{ form.old_password.label(class="form-label") }}
+
+		{{ form.old_password(class="form-control") }}
+		
+
+		<br/>
+		{{ form.confirm_password.label(class="form-label") }}
+
+		{{ form.confirm_password(class="form-control") }}
+		<br/>
+
+		{{ form.new_password.label(class="form-label") }}
+
+		{{ form.new_password(class="form-control") }}
+		
+		<br/>
+		
+
+		<br/>
+		
+		{{ form.submit(class="btn btn-secondary btn-sm") }}
+			
+
+		
+
+
+	</form>
+
+
+</div>
+
+</div>
 
 {% endblock %}

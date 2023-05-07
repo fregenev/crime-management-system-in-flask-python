@@ -12,14 +12,13 @@
 
 
 
-        {% if best_match %}
+       
             <h3>Best Match</h3>
             <p>Filename: {{ best_match }}</p>
-            <p>Distance: {{ score }}</p>
-            <img src="{{ url_for('static', filename='images/' + best_match.last_name) }}" alt="Best Match">
-        {% else %}
-            <p>No match found.</p>
-        {% endif %}
+            <p>Distance: {{ best_score }}</p>
+
+        
+
    
 </body>
 </html>

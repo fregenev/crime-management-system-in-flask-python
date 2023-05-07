@@ -5,6 +5,75 @@
 <head>
     <title>Fingerprint Match</title>
 </head>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        
+    }
+
+    .container {
+        max-width: 1700px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+
+    h1 {
+        font-size: 36px;
+        margin: 0 0 20px;
+        text-align: center;
+        color: #333;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    td {
+        font-size: 20px;
+        background-color: white;
+        color: black;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        color: #333;
+    }
+
+    td:first-child {
+        font-weight: bold;
+    }
+
+    .photo {
+        padding: 10px;
+        
+        display: inline-block;
+        
+    }
+
+    .photo img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+</style>
 <body>
     {% if best_match and best_match.profile_pic %}
     <h1>Fingerprint Match Result</h1>
@@ -14,13 +83,78 @@
     <p>Best match: {{ best_match.fingerprint}}</p>
     <p>Best match: {{ best_match.profile_pic2}}</p>
     <p>Matching score: {{ score }}%</p>
-    <img src="{{ url_for('static', filename='images/' + best_match.profile_pic)}}" width="200" align="right">
+    <img src="{{ url_for('static', filename='images/' + best_match.profile_pic)}}" width="200" class="photo" align="left">
 		
 
-		<img src="{{ url_for('static', filename='images/' + best_match.profile_pic2)}}" width="200" align="right"> 
+		<img src="{{ url_for('static', filename='images/' + best_match.profile_pic2)}}" class="photo" width="200" align="left"> 
 
-		<img src="{{ url_for('static', filename='images/fingerprint/' +best_match.fingerprint)}}" width="200" align="right"> 
-    {% elif filename not in best_match %} 
+		<img src="{{ url_for('static', filename='images/fingerprint/' +best_match.fingerprint)}}" class="photo" width="200" align="center"> 
+
+    </div>
+    <table>
+        <tr>
+            <th>FIRST NAME:</th>
+            <td>{{ best_match.first_name }}</td>
+        </tr>
+        <tr>
+            <th>LAST_NAME:</th>
+            <td>{{best_match.last_name }}</td>
+        </tr>
+        <tr>
+            <th>DOB:</th>
+            <td>{{best_match.dob }}</td>
+        </tr>
+        <tr>
+            <th>MOTHER NAME:</th>
+            <td>{{best_match.mother_name }}</td>
+        </tr>
+        <tr>
+            <th>GENDER:</th>
+            <td>{{best_match.gender }}</td>
+        </tr>
+        <tr>
+            <th>AGE:</th>
+            <td>{{best_match.age}}</td>
+        </tr>
+        <tr>
+            <th>PHONE NUMBER:</th>
+            <td>{{best_match.phone_No}}</td>
+        </tr>
+        <tr>
+            <th>STATION:</th>
+            <td>{{best_match.station_id}}</td>
+        </tr>
+        <tr>
+            <th>CASE_ID:</th>
+            <td>{{best_match.case_id}}</td>
+        </tr>
+        <tr>
+            <th>MEDICAL:</th>
+            <td>{{best_match.medicals}}</td>
+        </tr>
+        <tr>
+            <th>CAUGHT BY:</th>
+            <td>{{best_match.caught_by_id}}</td>
+        </tr>
+        <tr>
+            <th>Nationality:</th>
+            <td>{{best_match.nationality}}</td>
+        </tr>
+        <tr>
+            <th>ADDRESS:</th>
+            <td>{{best_match.address}}</td>
+        </tr>
+        <tr>
+            <th>WANTED:</th>
+            <td>{{best_match.wanted}}</td>
+        </tr>
+        <tr>
+            <th>DATA ADDED:</th>
+            <td>{{best_match.date_added }}</td>
+        </tr>
+    </table>
+</div>
+    {% elif filename != best_match %} 
     <p>No match found</p>
     {% endif %}
     <h2>Match a fingerprint</h2>

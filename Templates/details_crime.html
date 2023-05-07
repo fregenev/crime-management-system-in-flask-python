@@ -11,63 +11,78 @@
 
 	
 {% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Criminal Record</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0;
+			padding: 0;
+		}
 
+		.container {
+			max-width: 1700px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
 
+		h1 {
+			font-size: 36px;
+			margin: 0 0 20px;
+			text-align: center;
+			color: #333;
+		}
 
-	<h2>Dashboard</h2>
-	<br/>
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 20px;
+		}
 
-	<div class="card">
-  <div class="card-header">
-   
-  </div>
-  <div class="card-body">
-   
-    <p class="card-text">
+		th, td {
+			padding: 10px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
 
-<div class="container">
-	<div class="row">
-		<div class="col-8">
-			<br/>
+		th {
+			background-color: #f2f2f2;
+			color: #333;
+		}
 
-    <strong>FIRST NAME:</strong>
-	{{ name.first_name }}<br/>
+		td:first-child {
+			font-weight: bold;
+		}
 
-	<strong>LAST NAME:</strong>
-	{{name.last_name }}<br/>
+		.photo {
+			padding: 10px;
+			
+			display: inline-block;
+			
+		}
 
-	<strong>dob:</strong>
-	{{name.dob }}<br/>
-
-	<strong>gender:</strong>
-	{{name.gender }}<br/>
-	<strong>AGE</strong>
-	
-           
-	{{age}}
-	<br/>
-
-	<strong>Profile Pic:</strong>
-	{{name.profile_pic }}<br/>
-
-	<strong>Profile Pic2:</strong>
-	{{name.profile_pic2 }}<br/>
-
-	<strong>Date Joined:</strong>
-	{{name.date_added }}<br/>
-
-
-	
-
-    	
-    </p>
-    <!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
-
-    
-    
-	</div>
-	<div class="col-4">
-		{% if name.profile_pic %}
+		.photo img {
+			max-width: 100%;
+			height: auto;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Criminal Record</h1>
+		<div class="photo">
+{% if name.profile_pic %}
 		
  
 		<img src="{{ url_for('static', filename='images/' + name.profile_pic)}}" width="200" align="right">
@@ -81,39 +96,70 @@
 		
 		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
 		{% endif %}
-
-		
-	
+			</div>
+		<table>
+			<tr>
+				<th>FIRST NAME:</th>
+				<td>{{ name.first_name }}</td>
+			</tr>
+			<tr>
+				<th>LAST_NAME:</th>
+				<td>{{name.last_name }}</td>
+			</tr>
+			<tr>
+				<th>DOB:</th>
+				<td>{{name.dob }}</td>
+			</tr>
+			<tr>
+				<th>MOTHER NAME:</th>
+				<td>{{name.mother_name }}</td>
+			</tr>
+			<tr>
+				<th>GENDER:</th>
+				<td>{{name.gender }}</td>
+			</tr>
+			<tr>
+				<th>AGE:</th>
+				<td>{{age}}</td>
+			</tr>
+			<tr>
+				<th>PHONE NUMBER:</th>
+				<td>{{name.phone_No}}</td>
+			</tr>
+			<tr>
+				<th>STATION:</th>
+				<td>{{name.station_id}}</td>
+			</tr>
+			<tr>
+				<th>CASE_ID:</th>
+				<td>{{name.case_id}}</td>
+			</tr>
+			<tr>
+				<th>MEDICAL:</th>
+				<td>{{name.medicals}}</td>
+			</tr>
+			<tr>
+				<th>CAUGHT BY:</th>
+				<td>{{name.caught_by_id}}</td>
+			</tr>
+			<tr>
+				<th>Nationality:</th>
+				<td>{{name.nationality}}</td>
+			</tr>
+			<tr>
+				<th>ADDRESS:</th>
+				<td>{{name.address}}</td>
+			</tr>
+			<tr>
+				<th>WANTED:</th>
+				<td>{{name.wanted}}</td>
+			</tr>
+			<tr>
+				<th>DATA ADDED:</th>
+				<td>{{name.date_added }}</td>
+			</tr>
+		</table>
 	</div>
-	</div>
-	</div>
-
-
-  </div>
-</div>
-	
-
-	
-<br/>
-
-
-<div class="card">
-  <div class="card-header">
-   
-		
-
-
-	</form>
-
-
-
-</div>
-
-	
-	
-
-
-</div>
-
-
+</body>
+</html>
 {% endblock %}

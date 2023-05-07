@@ -1,0 +1,73 @@
+<!-- This is basically a python function to make reusable code -->
+<!-- See the other html files to see usage -->
+{% macro displayField(fieldName, placeholderValue) %}
+{{ fieldName(class='form-control',placeholder=placeholderValue,
+    **kwargs) }}
+{% if fieldName.errors|length != 0 %}
+{% for error in fieldName.errors %}
+<div class="alert alert-danger mt-2">
+    {{ error }}
+</div>
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% macro displayTable(data, head) %}
+<thead class="table-dark">
+    <tr>
+        {% for meta in head %}
+        <th>{{ meta }}</th>
+        {% endfor %}
+    </tr>
+</thead>
+<tbody>
+    {% for row in data %}
+    <tr>
+        {% for meta in head %}
+        <td>
+            {% if meta == 'Photo' %}
+            {% if row[meta] != None %}
+            <img class='img-rounded' src="{{ url_for('static', filename='criminal_images/'+row[meta]) }}" style='width: 120px; height:120px' />
+            {% else %}
+            <img class='img-rounded' src="../static/criminal_images/default_photo.jpg" style='width: 120px; height:120px' />
+            {% endif %}
+            {% else %}
+            {{ row[meta] }}
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</tbody>
+{% endmacro %}
+
+{% macro displaySearchData(data, meta) %}
+<thead class="table-dark">
+    <tr>
+        {% for data in meta %}
+        <th>{{ data }}</th>
+        {% endfor %}
+    </tr>
+</thead>
+<tbody>
+    {% for row in data %}
+    <tr>
+        {% for m in meta %}
+        <td>
+            {% if m == 'Photo' %}
+            {% if row[m] != None %}
+            {% if row[m] is defined %}
+            <img class='img-rounded' src="{{ url_for('static', filename='criminal_images/'+row[m]) }}" style='width: 120px; height:120px' />
+            {% endif %}
+            {% else %}
+            <img class='img-rounded' src="../static/criminal_images/default_photo.jpg" style='width: 120px; height:120px' />
+            {% endif %}
+            {% else %}
+            {{ row[m] }}
+            {% endif %}
+        </td>
+        {%endfor %}
+    </tr>
+    {% endfor %}
+</tbody>
+{% endmacro %}

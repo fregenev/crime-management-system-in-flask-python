@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>User Profile Page</title>
+	<style>
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: stretch;
+			width: 100%;
+			height: 100vh;
+			padding: 20px;
+			box-sizing: border-box;
+			font-family: sans-serif;
+		}
+
+		.left-column, .right-column {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: calc(50% - 10px);
+			height: calc(50% - 10px);
+			background-color: #f0f0f0;
+			border: 1px solid #ccc;
+			box-sizing: border-box;
+			padding: 20px;
+		}
+
+		.right-column {
+			background-color: #fff;
+		}
+
+		.update-profile, .messages {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: calc(50% - 10px);
+			height: calc(50% - 10px);
+			background-color: #fff;
+			border: 1px solid #ccc;
+			box-sizing: border-box;
+			padding: 20px;
+		}
+
+		.update-profile form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			height: 100%;
+			gap: 10px;
+		}
+
+		.update-profile form input[type="text"], .update-profile form input[type="email"], .update-profile form input[type="password"] {
+			width: 100%;
+			padding: 10px;
+			font-size: 16px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-sizing: border-box;
+			outline: none;
+		}
+
+		.update-profile form input[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			padding: 10px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		.messages ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+
+		.messages li {
+			padding: 10px;
+			margin-bottom: 5px;
+			background-color: #f0f0f0;
+			border-radius: 5px;
+		}
+
+		.messages li.sender {
+			background-color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="left-column">
+			<h2>User Details</h2>
+			<p>Name: John Doe</p>
+			<p>Email: john.doe@example.com</p>
+			<p>Address: 123 Main St, Anytown, USA</p>
+		</div>
+		<div class="right-column">
+			<img src="https://via.placeholder.com/200x200" alt="Profile Image" width="200" height="200">
+		</div>
+		<div class="update-profile">
+			<h2>Update Profile</h2>
+			<form action="" method="POST">
+				<label for="name">Name:</label>
+				<input type="text" id="name" name="name" placeholder="Enter your name" required>
+				<label for="email">Email:</label>
+				<input type="email" id="email" name="email" placeholder="Enter your email" required>
+				<label for="old-password">Old Password:</label>
+				<input type="password" id="old-password" name="old_password" placeholder="Enter your old password" required>
+				<label for="new-password">New Password:</label>
+				<input type="password" id="new-password" name="new_password" placeholder="Enter your new password" required>
+				<label for="confirm-password">Confirm Password:</label>
+				<input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your new password" required>
+				<input type="submit" value="Update Profile">
+			</form>
+		</div>
+		<div class="messages">
+			<h2>Messages</h2>
+			<ul>
+				<li class="sender">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel nisi leo. Aliquam vel tincidunt ex. </li>
+				<li class="recipient">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</li>
+				<li class="sender">Suspendisse sit amet lorem in leo dignissim maximus. Donec auctor dui at ipsum elementum, vel elementum arcu bibendum.</li>
+				<li class="recipient">Sed imperdiet velit et libero mollis, vel tincidunt sapien malesuada.</li>
+				<li class="sender">Etiam eleifend risus at nisl fermentum, ut auctor neque vestibulum. Nulla auctor ligula in mi laoreet, sit amet bibendum elit ultrices. </li>
+				<li class="recipient">Nam ac urna at orci dictum consequat nec eu mi. Integer eget dui sit amet nisl malesuada pellentesque. </li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+html, body {
+  height: 83vh;
+}
+
+div#header {
+  background-image: url(../images/1.jpg);
+  width: 105%;
+  max-width: 1920px;
+  min-width: 550px;
+  height: 150px;
+  margin-left: -8px;
+  margin-top: -8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+div > h1 {
+  margin-top:2%;
+  font-size: 48px;
+  color: white;
+}
+
+#container {
+  height: 100%;
+  min-width: 900px;
+  width: 100%;
+  padding: 0px 3px 0px 3px;
+}
+
+div#container > div {
+  float: left;
+}
+
+div#nav {
+  width: 17%;
+  height: 100%;
+  background-color: #e6e6e6;
+}
+
+div#info {
+  width: 81%;
+  height: 100%;
+  margin-left: 8px;
+  padding-left: 10px;
+  font-size: 19px;
+  overflow-y: auto;
+}
+
+div#nav a {
+  display: block;
+  font-size: 20px;
+  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 3px;
+  background-color: #a6a6a6;
+  font-weight: 520;
+  border-radius: 6px;
+}
+
+form input, select {
+  width: 260px;
+  height: 26px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+form label {
+  font-size: 18px;
+}
+
+table { border-collapse: collapse; }
+
+tr:nth-child(even) {
+    background: #CCC;
+    border: solid thin;
+}
+tr:nth-child(odd) {
+    background: #FFF;
+    border: solid thin;
+}
+
+td, th {
+    text-align: center;
+    border: solid thin;
+    width: 150px;
+}
+
+#photo_query {
+    width: 390px;
+    float: right;
+}
+#insert_crim {
+    text-align: center;
+    margin: 0 auto;
+    width:112px;
+}
+
+#insert_form {
+    padding-left: 40px;
+}
+
+#insert_form input:not(#submit_button) {
+    width: 95%;
+    padding: 2px;
+}
+
+#insert_form #submit_button {
+    margin-left: 43%;
+}
+
+form input[type="submit"] {
+  width: 110px;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  background-color:#33ff77;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #33ff77CC;
+    color: white;
+}

@@ -940,38 +940,38 @@ hashed_pw = generate_password_hash('admin', "sha256")
 
 user1= User(batchno='admin', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=3, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='1fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn' )
 
 user2= User(batchno='admin1', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=2, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='2fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 
 user3= User(batchno='admin3', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=2, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='3fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 
 user4= User(batchno='admin4', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=2, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='4fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 
 user5= User(batchno='admin5', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=1, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='5fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 
 user6= User(batchno='admin6', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=1, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='6fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 
 user7= User(batchno='admin7', first_name='admin',
  last_name='admin', rank='del',
-   station='del', profile_pic='admin', dob=datetime(2023,12,31),
-  active=1, gender='MALE', password_hash=hashed_pw)
+   station=2, profile_pic='admin', dob=datetime(2023,12,31),
+  active=1, gender='MALE', password_hash=hashed_pw, Personal_email='7fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 # add some test data
 location1 = Location(name='Lagos', latitude=51.5074, longitude=-0.1278)
 location2 = Location(name='abuja', latitude=40.7128, longitude=-74.0060)

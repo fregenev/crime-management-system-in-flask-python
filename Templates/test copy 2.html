@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Fingerprint Match Result</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+
+		h1 {
+			font-size: 36px;
+			margin: 0 0 20px;
+			text-align: center;
+			color: #333;
+		}
+
+		.result {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.result img {
+			max-width: 200px;
+			height: auto;
+			margin-right: 20px;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		}
+
+		.result h2 {
+			font-size: 28px;
+			margin: 0;
+			color: #333;
+		}
+
+		.result p {
+			font-size: 16px;
+			margin: 0;
+			color: #555;
+		}
+
+		.match {
+			color: #008000;
+		}
+
+		.no-match {
+			color: #ff0000;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Fingerprint Match Result</h1>
+		<div class="result match">
+			<img src="fingerprint.jpg" alt="Fingerprint Image">
+			<div>
+				<h2>Match Found!</h2>
+				<p>The fingerprint matches the record in our database.</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

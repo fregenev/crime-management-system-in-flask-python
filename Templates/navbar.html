@@ -1,17 +1,16 @@
 <link href="../static/dist/css/bootstrap.min.css" rel="stylesheet">
 <nav class="navbar navbar-expand-lg bg-dark">
+  <link href="navbar.css" rel="stylesheet">
   <div class="container-fluid">
     
-    <!-- <a class="navbar-brand" href="#">DATABASE</a> -->
-    <!-- <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
-      <!-- <span class="mr-2 d-none d-lg-inline text-gray-600 small"> {{ current_user.name }}</span> -->
+
       {% if current_user.profile_pic %}
 
 		<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" img class="img-profile rounded-circle" width="60x60">
 		
 		{% else %}
 
-		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" img class="img-profile rounded-circle" width="200">
+		<img src="{{ url_for('static', filename='images/default_photo.jpg')}}" img class="img-profile rounded-circle" width="60x60">
 
 		{% endif %}
 
@@ -62,6 +61,9 @@
         <li class="nav-item">
           <a class="nav-link px-2 text-white" aria-current="page" href="/map">MAP</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" aria-current="page" href="/map1">MAP1</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
@@ -95,4 +97,4 @@
 <a href="{{url_for('logout')}}" class="btn btn-primary btn-block">Logout</a>
 </div> 
 </nav>
-<br>
+

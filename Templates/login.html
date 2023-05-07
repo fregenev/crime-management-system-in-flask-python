@@ -1,60 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>login</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
-   
-    <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
-     <style>
-        .shadow{
-            box-shadow:3px 3px 10px black;
-            padding:30px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container" style="margin-top:100px">
-        <div class="col-md-offset-1 col-md-10" >
-            <div class="col-md-offset-3 col-md-5">
-                <div class="shadow">
-                <form action="/login" method="POST" autocomplete="off">
-                    <h3 class="page-header text-primary">Login (DATABASE)</h3>
+{% from 'form_helper.html' import displayField %}
 
-                     {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category,message in messages %}
-                        <div class="alert alert-{{category}}">{{message}}</div>
-                    {% endfor %}
-                {% endif %}
-                {% endwith %}
+{% extends "prelogin-layout.html" %}
 
-                    <div class="form-group">
-                        {{ form.hidden_tag() }}
+{% block title %}<title>Login</title>{% endblock %}
+<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/default.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/stylesheet.css') }}"> -->
+{% block style %}
+<link href="../static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                        {{ form.batchno.label(class="form-label") }}
-                
-                        {{ form.batchno(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.password.label(class="form-label") }}
+<style>
+	.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
 
-		                  {{ form.password(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.submit(class="btn btn-success btn-block") }}
-                    
-                        <!-- <a href="#" class="btn btn-primary btn-block">Register</a> -->
-                    </div>
-                </form>
-                    </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-<script>
-    $(document).ready(function(){
-        $(".alert").hide(3000)
-    });
-</script>
+	@media (min-width: 768px) {
+		.bd-placeholder-img-lg {
+			font-size: 3.5rem;
+		}
+	}
+</style>
+
+
+<!-- Custom styles for this template -->
+<link href="../static/styles/signin.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<div class='jumbotron'>
+	<div class="container">
+		<h1 class='text-center'>CRIME MANAGEMENT SYSTEM</h1>
+	</div>
+</div>
+<main class="form-signin">
+	<form action="{{ url_for('login') }}" method="POST">
+		{{ form.hidden_tag() }}
+		<img class="mb-4" src="../static/assets/brand/iconmonstr-police-10.svg" alt="" width="150" height="150">
+		<h1 class="h3 mb-3 fw-normal">Login</h1>
+		{{ displayField(form.batchno,'batchno',autocomplete='off',autofocus=true) }}
+		{{ displayField(form.password,'Password') }}
+		{{ form.submit(class="w-100 btn btn-lg btn-primary") }}
+	</form>
+	<br>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% for category, message in messages %}
+	<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+		{{ message }}
+	</div>
+	{% endfor %}
+	{% endwith %}
+
+</main>
+{% endblock %}

@@ -2,14 +2,16 @@ from flask_security import RoleMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask import Flask
+from werkzeug.security import generate_password_hash, check_password_hash
+from cryptography.fernet import Fernet
 from datetime import datetime
 
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from cryptography.fernet import Fernet
 
 
 # create a key to encrypt and decrypt messages
@@ -37,7 +39,7 @@ class Message(db.Model):
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(80), unique=True)
+    nasme = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
     def __str__(self):
@@ -46,20 +48,30 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     batchno = db.Column(db.String(20), unique=True, nullable=False)
+    Phone_No = db.Column(db.String(21), nullable=True)
+    Personal_email = db.Column(db.String(128), unique=True, nullable=False)
     first_name = db.Column(db.String(20), unique=False, nullable=False)
     last_name = db.Column(db.String(20), unique=False, nullable=False)
     rank = db.Column(db.String(20), unique=False, nullable=False)
     station = db.Column(db.String(120), db.ForeignKey('location.id'))
     profile_pic = db.Column(db.String(), nullable=True)
     dob = db.Column(db.DateTime, nullable=False)
+    Supervisor_id = db.Column(
+        db.String(128), nullable=False)
     active = db.Column(db.Boolean, default=False, nullable=False)
     gender = db.Column(db.String(20), unique=False, nullable=False)
+    caught_by_user = db.relationship('Crimerecords', foreign_keys='Crimerecords.caught_by', backref='caught_by_id')
     messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender')
     messages_received = db.relationship('Message', foreign_keys='Message.recipient_id', backref='recipient')
     date_added = db.Column(db.DateTime, default=datetime.utcnow) 
 	# Do some password stuff!
     password_hash = db.Column(db.String(128))
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return '<User %r>' % (self.first_name)
@@ -84,23 +96,26 @@ class Crimerecords(db.Model):
 	first_name = db.Column(db.String(20), nullable=False, unique=False)
 	last_name = db.Column(db.String(200), nullable=False)
 	mother_name = db.Column(db.String(120), nullable=False, unique=False)
-	# User Can Have Many Posts 
-	image = db.Column(db.LargeBinary)
-	case_id = db.Column(db.String(120))
-	# Foreign Key To Link Users (refer to primary key of the user)
+	motive = db.Column(db.String(64))
+	nationality = db.Column(db.String(32))
+	phone_No = db.Column(db.String(64))
+	case_id = db.Column(db.String(10))
+	medicals = db.Column(db.String(64))
+	address = db.Column(db.String(128))
 	crime_type = db.Column(db.String(120), nullable=False, unique=False)
 	wanted = db.Column(db.String(120), nullable=False, unique=False)
 	fingerprint = db.Column(db.String(120), nullable=False, unique=False)
 	station = db.Column(db.String(120), db.ForeignKey('location.id'))
+	caught_by = db.Column(db.String(120), db.ForeignKey('user.id'))
 	gender = db.Column(db.String(120), nullable=False, unique=False)
 	dob = db.Column(db.DateTime, nullable=False, unique=False)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
 	profile_pic = db.Column(db.String(),nullable=True)
 	profile_pic2 = db.Column(db.String(),nullable=True)
-	station = db.Column(db.String(20), db.ForeignKey('location.id'))
-
+    
+    
 	def __repr__(self):#
-		return (self.first_name)
+		return (self.first_name,self.station)
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)

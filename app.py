@@ -5,7 +5,7 @@ import base64
 import folium
 from flask_admin.contrib.sqla import ModelView
 import datetime
-from webforms import PoliceForm, CrimeForm, activeForm, MessageForm,LoginForm
+from webforms import PoliceForm, CrimeForm, activeForm, MessageForm,LoginForm,PasswordUpdateForm
 # from flask_security import LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash 
 from flask import Flask, request, redirect,url_for,request,flash, request, redirect, abort
@@ -30,23 +30,16 @@ import os.path as op
 from flask_admin.contrib.fileadmin import FileAdmin
 
 
-app.config['SECRET_KEY'] = "my super secret key that no one is supposed to know"
+# app.config['SECRET_KEY'] = "my super secret key that no one is supposed to know"
 
-UPLOAD_FOLDER = 'static/images/'
-UPLOAD_FOLDER2 = 'static/images/fingerprint/'
 path = op.join(op.dirname(__file__), 'static')
 
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['UPLOAD_FINGER'] = UPLOAD_FOLDER2
-#app.config['UPLOAD_DIR'] = 'static/Uploads'
-app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///our_users.db'
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///our_users.db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/our_users'
 
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
 #admin = Admin(app, name='CRIME DATABASE', template_mode='bootstrap3')
 
 # Flask_Login Stuff
@@ -160,33 +153,35 @@ def home():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    form = PasswordUpdateForm()
     id = current_user.id
-    user = User.query.get(id)
-    received_messages = user.messages_received
-    sent_messages = user.messages_sent
-    # get the list of users from the database
-    users = User.query.all()
-    # create the form and populate the recipient field with the list of users
-    form = MessageForm(request.form)
-    form.recipient_id.choices = [(str(user.id), user.batchno) for user in users]
-    if request.method == 'POST' and form.validate():
-        text = form.text.data
-        recipient_id = form.recipient_id.data
-        # sender_id = 1  # hardcoded for simplicity, you can use a session variable to store the current user's id
-        message = Message(recipient_id=recipient_id, sender_id=current_user.id)
-        message.set_text(text)
-        db.session.add(message)
-        db.session.commit()
-        # flash a message to the user indicating that their message has been sent
-        flash('Message sent!', 'success')
-        return redirect('/')
-    return render_template('index.html', form=form, received_messages=received_messages, sent_messages=sent_messages)
+    user = User.query.get_or_404(id)
+    if form.validate_on_submit():
+        if current_user.check_password(form.old_password.data):
+            current_user.set_password(form.new_password.data)
+            db.session.commit()
+            flash('Password updated successfully!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Incorrect password. Please try again.', 'danger')
+            form.old_password.errors.append('Incorrect password')
+
+    return render_template('index.html',user=user, form=form)
+
+
 
 @app.route('/view_all')
 #@login_required
 def view_all():
    # profiles = Crimerecords.query.all()
     return render_template('view_all.html', crime= Crimerecords.query.all())
+
+@app.route('/map1')
+#@login_required
+def map1():
+   # profiles = Crimerecords.query.all()
+    return render_template('mapcopy.html', map= Location.query.all())
+
 
 @app.route('/station')
 #@login_required
@@ -279,13 +274,13 @@ def addcrime():
 			fingerprint = request.files['fingerprint']
 
 			# Grab Image Name
-			pic_filename = secure_filename(profile_pic.filename)
-			pic_filename = secure_filename(profile_pic2.filename)
-			pic_filename = secure_filename(fingerprint.filename)
+			pic_filename1 = secure_filename(profile_pic.filename)
+			pic_filename2= secure_filename(profile_pic2.filename)
+			pic_filename3 = secure_filename(fingerprint.filename)
 			# Set UUID
-			pic_name = str(uuid.uuid1()) + "_" + pic_filename
-			pic_name2 = str(uuid.uuid1()) + "_" + pic_filename
-			fingerprint = str(uuid.uuid1()) + "_" + pic_filename
+			pic_name = str(uuid.uuid1()) + "_" + pic_filename1
+			pic_name2 = str(uuid.uuid1()) + "_" + pic_filename2
+			fingerprint = str(uuid.uuid1()) + "_" + pic_filename3
 			# Save That Image
 			saver = request.files['profile_pic']
 			saver2 = request.files['profile_pic2']
@@ -296,14 +291,21 @@ def addcrime():
 			#hashed_pw = generate_password_hash(form.password_hash.data, "sha256")
 			user = Crimerecords(first_name=form.first_name.data,
 			 last_name=form.last_name.data, 
-			 mother_name=form.mother_name.data, 
+			 mother_name=form.mother_name.data,
+             motive=form.motive.data,
+             nationality=form.nationality.data,
+             phone_No=form.phone_no.data,
+             case_id=form.case_id.data,
+             medicals=form.medicals.data,
+             address=form.address.data,
 			 crime_type=form.crime_type.data, 
-			 wanted=form.gender.data,
+			 wanted=form.wanted.data,
 			 gender=form.gender.data,
 			 dob=form.dob.data,
 			 profile_pic= pic_name,
 			 profile_pic2= pic_name2,
-			 fingerprint= fingerprint, 
+			 fingerprint= fingerprint,
+			 caught_by= current_user.id,
 			 station=current_user.station)
 			db.session.add(user)
 			db.session.commit()
@@ -313,18 +315,23 @@ def addcrime():
 			#file2.save(os.path.join(app.config['UPLOAD_FOLDER'],file2.filename))
 			
 			
-		# name = form.name.data
-		form.mother_name.data = ''
-		form.first_name.data = ''
-		form.profile_pic.data = ''
+		form.first_name.data= ''
 		form.last_name.data = ''
-		form.gender.data = ''
-		form.wanted.data = ''
-		form.dob.data = ''
+		form.mother_name.data = ''
+		form.motive.data = ''
+		form.nationality.data = ''
+		form.case_id.data = ''
+		form.phone_no.data = ''
+		form.case_id.data = ''
+		form.medicals.data = ''
+		form.address.data = ''
 		form.crime_type.data = ''
-		form.profile_pic2.data = ''
-		form.fingerprint.data = ''
-		flash("added")
+		form.wanted.data = ''
+		form.gender.data = ''
+		form.dob.data = ''
+		# form.profile_pic2.data = ''
+		# form.fingerprint.data = ''
+		flash("RECORD SUCCEFULLY ADDED!!!")
 		return redirect(url_for('view'))
 	our_users = Crimerecords.query.order_by(Crimerecords.date_added)
 	return render_template("addcrime.html",
@@ -436,10 +443,13 @@ def register():
 			user = User(batchno=form.batchno.data, 
                first_name=form.first_name.data, 
                last_name=form.last_name.data, 
-               rank=form.rank.data, 
+               rank=form.rank.data,
+               Personal_email=form.personal_email.data,
+               Phone_No=form.phone_no.data,
                gender=form.gender.data,
                station=current_user.station,
                dob=form.dob.data,
+               Supervisor_id=current_user.batchno,
                profile_pic= pic_name, 
                password_hash=hashed_pw, active=True)
 			db.session.add(user)
@@ -448,7 +458,7 @@ def register():
 			#file2.save(os.path.join(app.config['UPLOAD_FOLDER'],file2.filename))
 			
 			
-		# name = form.name.data
+		form.personal_email= ''
 		form.batchno.data = ''
 		form.first_name.data = ''
 		form.profile_pic.data = ''
@@ -693,7 +703,6 @@ def match():
         counter += 1
         fingerprint_image = cv2.imread("static/images/fingerprint/"+ file)
         if fingerprint_image is None:
-
             print("Error: could not read fingerprint image")
             continue
 
@@ -744,37 +753,91 @@ def match():
 
 @app.route('/face_match', methods=['GET', 'POST'])
 def face_match():
-    if request.method == 'POST':
-        # get the uploaded file
-        file = request.files['file']
-        # read the file as an image
-        image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    if request.method =='POST':
+     file = request.files['file']
+    # Load the image of the face you want to match
+     face_to_match = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    else:
+      return "no match"
+# Convert the face to grayscale
+    gray_face_to_match = cv2.cvtColor(face_to_match, cv2.COLOR_BGR2GRAY)
 
-        # detect faces in the uploaded image
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'static/haarcascade_frontalface_default.xml')
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+# Create an ORB object for feature detection and description
+    orb = cv2.ORB_create()
 
-        # loop through the detected faces and compare them to the faces in the database
-        best_score = 0
-        best_match = None
-        for face in Crimerecords.query.all():
-            known_image = cv2.imread("static/images/"+ face)
-            known_gray_image = cv2.cvtColor(known_image, cv2.COLOR_BGR2GRAY)
-            known_faces = face_cascade.detectMultiScale(known_gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+# Get the keypoints and descriptors for the face to match
+    kp1, des1 = orb.detectAndCompute(gray_face_to_match, None)
 
-            # compare the detected face to each known face
-            for (x, y, w, h) in faces:
-                face_image = gray_image[y:y+h, x:x+w]
-                face_image = cv2.resize(face_image, (known_faces[0][2], known_faces[0][3]))
-                score = cv2.matchTemplate(face_image, known_gray_image, cv2.TM_CCOEFF_NORMED)
-                if score > best_score:
-                    best_score = score
-                    best_match = face.last_name
+# Create a list of all the images in the folder
+    image_files = [f for f in os.listdir("static\images") if f.endswith(".jpg")]
 
-        return render_template('match_faces.html', best_match=best_match,best_score=best_score)
+# Initialize variables for tracking the best match
+    best_match_image = None
+    best_match_distance = np.inf
 
-    return render_template('match_faces.html')
+# Loop through each image in the folder and find the best match
+    for image_file in image_files:
+    # Load the image
+     image = cv2.imread(os.path.join("static\images", image_file))
+    
+    # Convert the image to grayscale
+     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Get the keypoints and descriptors for all faces in the image
+     kp2, des2 = orb.detectAndCompute(gray_image, None)
+    
+    # Create a brute-force matcher object
+     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    
+    # Match the descriptors for the face to match and the current face in the loop
+     matches = bf.match(des1, des2)
+    
+    # Calculate the distance between the two feature sets
+     distance = sum([match.distance for match in matches])
+    
+    # Check if this is the best match so far
+     if distance < best_match_distance:
+         best_match_distance = distance
+         best_match_image = image_file
+
+# Print the best match image file name
+    print("Best match: " + best_match_image)
+    return render_template ("match_faces.html",best_match =best_match_image, best_score =best_match_distance)
+# @app.route('/face_match', methods=['GET', 'POST'])
+# def face_match():
+#     if request.method == 'POST':
+#         # get the uploaded file
+#         file = request.files['file']
+#         # read the file as an image
+#         image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+
+#         # detect faces in the uploaded image
+#         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'static/haarcascade_frontalface_default.xml')
+#         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#         faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+#         # loop through the detected faces and compare them to the faces in the database
+#         best_score = 0
+#         best_match = None
+#         for face in Crimerecords.query.all():
+#             known_image = cv2.imread("static/images/"+ face)
+#             known_gray_image = cv2.cvtColor(known_image, cv2.COLOR_BGR2GRAY)
+#             known_faces = face_cascade.detectMultiScale(known_gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+#             # compare the detected face to each known face
+#             for (x, y, w, h) in faces:
+#                 face_image = gray_image[y:y+h, x:x+w]
+#                 face_image = cv2.resize(face_image, (known_faces[0][2], known_faces[0][3]))
+#                 score = cv2.matchTemplate(face_image, known_gray_image, cv2.TM_CCOEFF_NORMED)
+#                 if score > best_score:
+#                     best_score = score
+#                     best_match = best_match
+
+#         return render_template('match_faces.html', best_match=best_match,best_score=best_score)
+
+#     return render_template('match_faces.html')
+
+
 
 @app.route('/map')
 def map():
