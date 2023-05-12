@@ -15,7 +15,7 @@ from datetime import datetime
 from flask_admin import Admin
 from flask_admin.contrib import sqla as flask_admin_sqla
 from flask_admin import AdminIndexView
-from flask_admin import expose
+from flask_admin import helpers, expose
 from flask_admin.menu import MenuLink
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 import numpy as np
@@ -596,6 +596,25 @@ class MyAdminIndexView(AdminIndexView):
         else:
             flash('YOU ARE NOT AUTHORIZE TO ACCESS THIS PAGE!!!')
             return redirect(url_for("index"))
+        
+    @expose('/user', methods=('GET', 'POST'))
+    def register_view(self):
+        form = PoliceForm(request.form)
+        if helpers.validate_form_on_submit(form):
+            user = User()
+
+            form.populate_obj(user)
+            # we hash the users password to avoid saving it as plaintext in the db,
+            # remove to use plain text:
+            user.password = generate_password_hash(form.password.data)
+
+            db.session.add(user)
+            db.session.commit()
+
+            login.login_user(user)
+            return redirect(url_for('User'))
+        self._template_args['form'] = form
+        return super(MyAdminIndexView,self).index()   
 # further in app.py
 admin = Admin(
         app,
