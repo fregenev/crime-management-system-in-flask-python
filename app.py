@@ -597,24 +597,7 @@ class MyAdminIndexView(AdminIndexView):
             flash('YOU ARE NOT AUTHORIZE TO ACCESS THIS PAGE!!!')
             return redirect(url_for("index"))
         
-    @expose('/user', methods=('GET', 'POST'))
-    def register_view(self):
-        form = PoliceForm(request.form)
-        if helpers.validate_form_on_submit(form):
-            user = User()
-
-            form.populate_obj(user)
-            # we hash the users password to avoid saving it as plaintext in the db,
-            # remove to use plain text:
-            user.password = generate_password_hash(form.password.data)
-
-            db.session.add(user)
-            db.session.commit()
-
-            login.login_user(user)
-            return redirect(url_for('User'))
-        self._template_args['form'] = form
-        return super(MyAdminIndexView,self).index()   
+  
 # further in app.py
 admin = Admin(
         app,
@@ -629,6 +612,7 @@ def __init__(self,id,uname, password_hash):
     self.username = uname
     self.password_hash = password_hash
     #self.id = id
+
 
 class DefaultModelView(ModelView):
 	column_exclude_list = ['password_hash', ]
@@ -690,19 +674,23 @@ admin.add_view(ModelView(Role, db.session))
 # Create Login Page
 
 
-
-
-# @app.route('/match', methods=['POST'])
-# def match():
-#     # data = request.files['file'].read()
-#     sample = cv2.imread("static/images/fingerprint/hard/1__M_Left_index_finger_CR.bmp")
 @app.route('/match', methods=['GET', 'POST'])
 def match():
     if request.method == 'POST':
         # get the uploaded file
         file = request.files['file']
         # read the file as an image
-        sample = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+        try:
+            file_bytes = file.read()
+            if not file_bytes:
+                raise ValueError("Error: Empty file.")
+            sample = cv2.imdecode(np.frombuffer(file_bytes, np.uint8), cv2.IMREAD_UNCHANGED)
+            if sample is None:
+                raise ValueError("Error: Invalid image file.")
+        except Exception as e:
+            print(str(e))  # Print the error message for debugging purposes
+            return render_template('error.html', error=str(e))
+
     else:
         # load a default image
         return render_template('match.html')
@@ -713,28 +701,27 @@ def match():
     kp1, kp2, mp = None, None, None
 
     counter = 0
-    for file in Crimerecords.query.limit(1000).all():
-        file = file.fingerprint
-        if counter%10 == 0:
+    for record in Crimerecords.query.limit(1000).all():
+        file = record.fingerprint
+        if counter % 10 == 0:
             print(counter)
             print(file)
 
         counter += 1
-        fingerprint_image = cv2.imread("static/images/fingerprint/"+ file)
+        fingerprint_image = cv2.imread("static/images/fingerprint/" + file)
         if fingerprint_image is None:
-            print("Error: could not read fingerprint image")
+            print("Error: Could not read fingerprint image")
             continue
 
         sift = cv2.SIFT_create()
         keypoints_1, descriptors_1 = sift.detectAndCompute(sample, None)
         keypoints_2, descriptors_2 = sift.detectAndCompute(fingerprint_image, None)
 
-        matches = cv2.FlannBasedMatcher({'algorithm':1, 'trees':10},
-                                        {}).knnMatch(descriptors_1, descriptors_2, k=2)
+        matches = cv2.FlannBasedMatcher({'algorithm': 1, 'trees': 10}, {}).knnMatch(descriptors_1, descriptors_2, k=2)
         match_points = []
 
         for p, q in matches:
-            if p.distance <0.1 * q.distance:
+            if p.distance < 0.1 * q.distance:
                 match_points.append(p)
 
         keypoints = 0
@@ -743,8 +730,8 @@ def match():
         else:
             keypoints = len(keypoints_2)
 
-        if len(match_points) / keypoints*100 > best_score:
-            best_score = len(match_points)/keypoints*100
+        if len(match_points) / keypoints * 100 > best_score:
+            best_score = len(match_points) / keypoints * 100
             filename = file
             image = fingerprint_image
             kp1, kp2, mp = keypoints_1, keypoints_2, match_points
@@ -753,13 +740,20 @@ def match():
     print("BEST MATCH:" + file)
     print("Score: " + str(best_score))
 
-    result = cv2.drawMatches(sample, kp1, image, kp2, mp, None)
-    result = cv2.resize(result, None, fx=4, fy=4)
+    if image is None:
+        return render_template('error.html', error="Error: No matching image found.")
 
-    # Convert the image to a PNG format
-    _, buffer = cv2.imencode('.png', result)
-    result = buffer.tobytes()
-    b64_result = base64.b64encode(result).decode('utf-8')
+    try:
+        result = cv2.drawMatches(sample, kp1, image, kp2, mp, None)
+        result = cv2.resize(result, None, fx=4, fy=4)
+
+        # Convert the image to a PNG format
+        _, buffer = cv2.imencode('.png', result)
+        result = buffer.tobytes()
+        b64_result = base64.b64encode(result).decode('utf-8')
+    except Exception as e:
+        print(str(e))  # Print the error message for debugging purposes
+        return render_template('error.html', error=str(e))
 
     if filename:
         best_match = Crimerecords.query.filter_by(fingerprint=filename).first()
@@ -767,9 +761,8 @@ def match():
         best_match = None
 
     return render_template('match.html', result=b64_result, best_match=best_match, score=best_score)
-        
 
-
+    
 @app.route('/face_match', methods=['GET', 'POST'])
 def face_match():
     if request.method =='POST':
@@ -777,7 +770,7 @@ def face_match():
     # Load the image of the face you want to match
      face_to_match = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     else:
-      return "no match"
+      return render_template ("match_faces.html")
 # Convert the face to grayscale
     gray_face_to_match = cv2.cvtColor(face_to_match, cv2.COLOR_BGR2GRAY)
 

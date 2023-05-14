@@ -159,15 +159,18 @@
     {% endif %}
     <h2>Match a fingerprint</h2>
 
+
     <form action="/match" method="post" enctype="multipart/form-data">
         <label for="file">Fingerprint image:</label>
         <input type="file" id="file" name="file"><br><br>
 
         <input type="submit" value="Match">
     </form>
-</body>
+{#fffff#} 
 </html>
-    
+{%if result ==error%}
+    {{ error }}
+    {%endif%}
 </body>
 </html>
 {% endblock %}
