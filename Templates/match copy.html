@@ -100,7 +100,7 @@ def match():
     
 @app.route('/match')
 def match():
-    # data = request.files['file'].read()
+    data = request.files['file'].read()
     sample = cv2.imread("static/images/fingerprint/102__M_Left_middle_finger.dib")
     best_score = 0
     filename = None

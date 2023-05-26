@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+	
+{% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Criminal Record</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			max-width: 1700px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+
+		h1 {
+			font-size: 36px;
+			margin: 0 0 20px;
+			text-align: center;
+			color: #333;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 20px;
+		}
+
+		th, td {
+			padding: 10px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th {
+			background-color: #f2f2f2;
+			color: #333;
+		}
+
+		td:first-child {
+			font-weight: bold;
+		}
+
+		.photo {
+			padding: 10px;
+			
+			display: inline-block;
+			
+		}
+
+		.photo img {
+			max-width: 100%;
+			height: auto;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Criminal Record</h1>
+		<div class="photo">
+
+			</div>
+		<table>
+			<tr>
+				<th>STATION NAME:</th>
+				<td>{{ name.name}}</td>
+			</tr>
+			<tr>
+				
+		</table>
+        
+	</div>
+</body>
+</html>
+{% endblock %}

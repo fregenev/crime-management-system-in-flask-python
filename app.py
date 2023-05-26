@@ -111,40 +111,17 @@ def officer():
    return render_template('officer.html', police = User.query.filter_by(station = current_user.station).all())#=profiles1)
 
 
-@app.route('/admin.add_view')
+@app.route('/admin1')
 @login_required
 def admin():
 	id = current_user.id
 	if id == 1:
-		return render_template("admin.html")
+		return render_template("Admin/admin.html")
 	else:
 		flash("Sorry you must be the Admin to access the Admin Page...")
 		return render_template('Admin/admin.html')   
     # return render_template('Admin/admin.html')   
 
-@app.route('/detect', methods=['GET', 'POST'])
-def detect():
-    if request.method == 'POST':
-        # Get image from request
-        image = request.files['image'].read()
-        # Convert image to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        # Load face detection classifier
-        face_cascade = cv2.CascadeClassifier('path/to/haarcascade_frontalface_default.xml')
-        # Detect faces in image
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-        # Draw rectangles around detected faces
-        for (x, y, w, h) in faces:
-            cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        # Convert processed image to binary data
-        image_data = cv2.imencode('.jpg', image)[1].tostring()
-        db_face = User(image=image)
-        db.session.add(db_face)
-        db.session.commit()
-        # Return image with rectangles drawn around detected faces
-       
-        # Pass image data to template
-        return render_template('detect.html', image_data=image_data)
 
 @app.route('/home')
 def home():
@@ -189,6 +166,17 @@ def station():
    # profiles = Crimerecords.query.all()
     return render_template('station.html', station= Location.query.all())
 
+
+@app.route('/details_station/<int:id>', methods=['GET', 'POST'])
+@login_required
+def details_station(id):
+	name = Location.query.get_or_404(id)
+	return render_template('station_details.html',
+				name = name,
+				id = id)
+
+
+
 @app.route('/view')
 #@login_required
 def view():
@@ -209,7 +197,7 @@ def admindashboard(id):
        db.session.commit()
        flash('ACCOUNT UPDATED!!!')
     #    return redirect(url_for("admindashboard/<int:id>")) 
-    return render_template('Admin/view.html', police= User.query.all(), 
+    return render_template('view.html', police= User.query.all(), 
 				form=form, data = data)
   
 
@@ -531,18 +519,6 @@ def edit_crime(id):
 				name_to_update = name_to_update,
 				id = id)
 
-# @app.route('/search', methods=['GET', 'POST'])
-# def search():
-#     form = SearchForm()
-#     if form.validate_on_submit():
-#         search_term = form.search_term.data
-#         filter_option = form.filter_option.data
-#         if filter_option == 'first_name':
-#             results = User.query.filter(User.first_name.like(f'%{search_term}%')).all()
-#         elif filter_option == 'last_name':
-#             results = User.query.filter(User.last_name.like(f'%{search_term}%')).all()
-#         return render_template('results.html', results=results, form=form)
-#     return render_template('search.html', form=form)
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -552,6 +528,8 @@ def search():
         results = User.query.filter(User.last_name.like(f'%{search_term}%')).all()
     elif filter_option == 'first_name':
         results = User.query.filter(User.first_name.like(f'%{search_term}%')).all()
+    elif filter_option=='c_first_name':
+          results=Crimerecords.query.filter(Crimerecords.first_name.like(f'%{search_term}%')).all()
     return render_template('results.html',results=results)
 
 @app.route('/upload', methods=['POST'])
@@ -815,41 +793,6 @@ def face_match():
 # Print the best match image file name
     print("Best match: " + best_match_image)
     return render_template ("match_faces.html",best_match =best_match_image, best_score =best_match_distance)
-# @app.route('/face_match', methods=['GET', 'POST'])
-# def face_match():
-#     if request.method == 'POST':
-#         # get the uploaded file
-#         file = request.files['file']
-#         # read the file as an image
-#         image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-
-#         # detect faces in the uploaded image
-#         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'static/haarcascade_frontalface_default.xml')
-#         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#         faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-
-#         # loop through the detected faces and compare them to the faces in the database
-#         best_score = 0
-#         best_match = None
-#         for face in Crimerecords.query.all():
-#             known_image = cv2.imread("static/images/"+ face)
-#             known_gray_image = cv2.cvtColor(known_image, cv2.COLOR_BGR2GRAY)
-#             known_faces = face_cascade.detectMultiScale(known_gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-
-#             # compare the detected face to each known face
-#             for (x, y, w, h) in faces:
-#                 face_image = gray_image[y:y+h, x:x+w]
-#                 face_image = cv2.resize(face_image, (known_faces[0][2], known_faces[0][3]))
-#                 score = cv2.matchTemplate(face_image, known_gray_image, cv2.TM_CCOEFF_NORMED)
-#                 if score > best_score:
-#                     best_score = score
-#                     best_match = best_match
-
-#         return render_template('match_faces.html', best_match=best_match,best_score=best_score)
-
-#     return render_template('match_faces.html')
-
-
 
 @app.route('/map')
 def map():
@@ -865,7 +808,9 @@ def map():
 
     # render the map using an HTML template
     return render_template('map.html', map=map._repr_html_())
-	
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	form = LoginForm()
@@ -883,9 +828,8 @@ def login():
 				flash("password incorrect")	
 		else:
 			flash("That User Doesn't Exist! Try Again...")
-
-
 	return render_template('login.html', form=form)
+
 
 # Create Logout Page
 @app.route('/logout', methods=['GET', 'POST'])
@@ -912,6 +856,16 @@ def deletecrme(id):
     db.session.commit()
     flash("deleted succesfully")
     return redirect('/view')	
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<string:path>")
+@app.route("/<path:path>")
+def catch_all(path):
+    """Catches all routes and returns 404 if url does not much
+    """
+    
+    return render_template('404.html')
 
 
 @app.route('/adminofficer/<int:id>')

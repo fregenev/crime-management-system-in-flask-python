@@ -28,7 +28,7 @@
             <li><a class="dropdown-item" href="{{url_for('allofficer')}}">VIEW ALL OFFICER</a></li>
             <li><a class="dropdown-item" href="{{url_for('register')}}">REGISTER OFFICER</a></li>
             <!-- <li><hr class="dropdown-divider"></li> -->
-            <li><a class="dropdown-item" href="#">POLICE SATION</a></li>
+            <li><a class="dropdown-item" href="{{url_for('station')}}">POLICE SATION</a></li>
           </ul>
 
           <li class="nav-item dropdown">
@@ -89,6 +89,7 @@
       <select name="filter_option">
         <option value="last_name">STATION</option>
         <option value="first_name">FIRST_NAME</option>
+        <option value="c_first_name">CRIMINAL FIRST NAME</option>
       </select>
       <button type="submit" class="btn btn-primary">Search</button>
     </form>
