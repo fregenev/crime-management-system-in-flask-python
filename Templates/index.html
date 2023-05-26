@@ -12,7 +12,13 @@
 {% endfor %}
 
 
-
+<style>
+	.cropped-image {
+		width: 300px;
+		height: 300px;
+		object-fit: cover;
+	}
+</style>
 <h2>Dashboard</h2>
 <br/>
 
@@ -69,11 +75,20 @@
 <div class="col-4">
 	{% if current_user.profile_pic %}
 
-	<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="200" align="right">
-	
-	{% else %}
-
-	<img src="{{ url_for('static', filename='images/default_photo.jpg')}}" width="200" align="right">
+	<h3>{{ current_user.profile_pic }}</h3>
+	{% if current_user.media_type == 'image' %}
+		<img src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" alt="Image" align="right" class="cropped-image">
+	{% elif current_user.media_type == 'audio' %}
+		<audio controls>
+			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}">
+			Your browser does not support the audio element.
+		</audio>
+	{% elif current_user.media_type == 'video' %}
+		<video width="320" height="240" controls>
+			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	{% endif %}
 
 	{% endif %}
 

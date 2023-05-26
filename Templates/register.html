@@ -86,9 +86,8 @@
 		{{ form.password_hash2(class="form-control") }}
 		
 		<br/>
-		{{ form.profile_pic.label(class="form-label") }}
-
-		{{ form.profile_pic(class="form-control") }}
+		<input type="file" name="media" accept="image/*, audio/*, video/*" required>
+        <input type="submit" value="Upload">
 		<br/>
 
 		{{ form.submit(class="btn btn-secondary") }}

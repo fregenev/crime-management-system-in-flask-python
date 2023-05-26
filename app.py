@@ -51,7 +51,9 @@ login_manager.login_view = 'login'
 def load_user(user_id):
 	return User.query.get(int(user_id))
 
-
+@app.template_filter('custom_b64encode')
+def custom_b64encode(data):
+    return base64.b64encode(data).decode('utf-8')
 # class MicroBlogModelView(sqla.ModelView):
 
 #     def is_accessible(self):
@@ -416,17 +418,15 @@ def register():
 		user = User.query.filter_by(batchno=form.batchno.data).first()
 		if user is None:
 			# Hash the password!!!
-			profile_pic = request.files['profile_pic']
+			file = request.files['media']
 
 			# Grab Image Name
-			pic_filename = secure_filename(profile_pic.filename)
+			media_name = file.filename
 			# Set UUID
-			pic_name = str(uuid.uuid1()) + "_" + pic_filename
+			media_type = file.content_type.split('/')[0]  # Extract media type from content type
 			# Save That Image
-			saver = request.files['profile_pic']
+			media_data = file.read()
 			# Change it to a string to save to db
-			profile_pic = pic_name
-			#file2 = request.files["profile_pic"]
 			hashed_pw = generate_password_hash(form.password_hash.data, "sha256")
 			user = User(batchno=form.batchno.data, 
                first_name=form.first_name.data, 
@@ -437,13 +437,14 @@ def register():
                gender=form.gender.data,
                station=current_user.station,
                dob=form.dob.data,
-               Supervisor_id=current_user.batchno,
-               profile_pic= pic_name, 
-               password_hash=hashed_pw, active=True)
+               Supervisor_id=current_user.batchno, 
+               password_hash=hashed_pw,
+               profile_pic=media_name,
+               media_type=media_type, 
+               media_data=media_data,
+                active=True)
 			db.session.add(user)
 			db.session.commit()
-			saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
-			#file2.save(os.path.join(app.config['UPLOAD_FOLDER'],file2.filename))
 			
 			
 		form.personal_email= ''
@@ -593,22 +594,27 @@ def __init__(self,id,uname, password_hash):
 
 
 class DefaultModelView(ModelView):
-	column_exclude_list = ['password_hash', ]
+	can_create = True
 	column_searchable_list = ['first_name', 'last_name']
+	can_set_page_size = True
+	column_display_pk= ['first_name', 'last_name']
 	can_export = True
-	
+	column_exclude_list = ['media_data','password_hash', 'profile_pic']
 	can_view_details = True
 	edit_modal = True
-	column_editable_list = ['first_name', 'last_name','active','batchno']
-	
-
+	column_editable_list = ['first_name', 'last_name','active','batchno']  
+	column_details_exclude_list = ['media_data','password_hash', 'profile_pic']
+from flask_admin.form.upload import ImageUploadField
 	
 class CrimerecordsView(ModelView):
-	column_exclude_list = ['Profile_Pic', ]
-	column_exclude_list = ['ProfilePic2', ]
+	# column_exclude_list = ['Profile_Pic', ]
+	# column_exclude_list = ['ProfilePic2', ]
 	column_searchable_list = ['first_name', 'last_name']
 	can_export = True
 	can_view_details = True
+	form_extra_fields = {
+        'profile_pic': ImageUploadField('profile_pic', base_path='static/images/')
+    }
 
 class MessageView(ModelView):
 	can_export = True

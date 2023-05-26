@@ -2,6 +2,7 @@ from flask_security import RoleMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask import Flask
+from sqlalchemy import LargeBinary
 from werkzeug.security import generate_password_hash, check_password_hash
 from cryptography.fernet import Fernet
 from datetime import datetime
@@ -54,7 +55,9 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(20), unique=False, nullable=False)
     rank = db.Column(db.String(20), unique=False, nullable=False)
     station = db.Column(db.String(120), db.ForeignKey('location.id'))
-    profile_pic = db.Column(db.String(), nullable=True)
+    profile_pic = db.Column(db.String(100))
+    media_type = db.Column(db.String(10))
+    media_data = db.Column(LargeBinary)
     dob = db.Column(db.DateTime, nullable=False)
     Supervisor_id = db.Column(
         db.String(128), nullable=False)
