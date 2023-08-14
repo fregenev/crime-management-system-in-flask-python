@@ -2,33 +2,31 @@
 
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-
-	
-{% endfor %}
-<marquee direction = "right" behavior ="alternate">contt</marquee>
+<div class="card">
+  <div class="card-header">
+    <p class="h2">SEND MESSAGE</p>
+    
+  </div>
+  <div class="card-body">
 <form method="post" action="/send_message">
   {{ form.csrf_token }}
   <br/>
-  {{ form.recipient_id.label (class="form-label")}} {{ form.recipient_id (class="form-control")}}
+  {{ form.recipient_id.label (class="form-label")}} {{ form.recipient_id (class="form-select form-select-sm")}}
   {% for error in form.recipient_id.errors %}
     <span style="color: red;">[{{ error }}]
   {% endfor %}
   <br/>
   <br>
-  {{ form.text.label }} {{ form.text }}
+  {{ form.text.label }} {{ form.text  (class="form-control")}}
   {% for error in form.text.errors %}
     <span style="color: red;">[{{ error }}]</span>
   {% endfor %}
   <br>
-  <input type="submit" value="Send message">
+  <input class="btn btn-primary" type="submit" value="Send message">
 </form>
 
+</div>
 
+</div>
 
 {% endblock %}

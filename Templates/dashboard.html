@@ -1,24 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% import "_macros.html" as macros %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-
-	
-{% endfor %}
-
-
-
-	<h2>Dashboard</h2>
-	<br/>
-
-	<div class="card">
-  <div class="card-header">
+	<div class="card rounded border border-5">
+		<div >
    
   </div>
   <div class="card-body">
@@ -28,8 +14,9 @@
 <div class="container">
 	<div class="row">
 		<div class="col-8">
-		<strong>batchno:</strong>
-			{{ name_to_update.batchno }}<br/>
+			{%filter upper%}
+		<strong>BATCH NO:</strong>
+	{{ name_to_update.batchno }}<br/>
 
     <strong>FIRST NAME:</strong>
 	{{ name_to_update.first_name }}<br/>
@@ -37,124 +24,98 @@
 	<strong>LAST NAME:</strong>
 	{{ name_to_update.last_name }}<br/>
 
-	<strong>rank:</strong>
+	<strong>RANK:</strong>
 	{{ name_to_update.rank }}<br/>
 
-	<strong>dob:</strong>
+	<strong>DATE OF BIRTH:</strong>
 	{{ name_to_update.dob }}<br/>
 
-	<strong>gender:</strong>
+	<strong>GENDER:</strong>
 	{{ name_to_update.gender }}<br/>
 	
+	<strong>PHONE NUMBER:</strong>
+	{{ name_to_update.Phone_No }}<br/>
+
+	<strong>PERSONAL EMAIL ADDRESS:</strong>
+	{{ name_to_update.Personal_email }}<br/>
+
+	<strong>SUPERVISOR:</strong>
+	{{ name_to_update.Supervisor_id }}<br/>
+
+	<strong>STATION:</strong>
+	{{ name_to_update.station_id }}<br/>
+	<strong>ACTIVE:</strong>
+	{% if name_to_update.active == true%}
+	&#9989
+	{%else%}
+	&#128683
+	{% endif %}<br/>
 	<strong>AGE</strong>
 	
            
 	{{age}}
 	
 	<br/>
-	<strong>Profile Pic:</strong>
-	{{ name_to_update.profile_pic }}<br/>
-
+	
 	<strong>Date Joined:</strong>
 	{{ name_to_update.date_added }}<br/>
 
-
-	
-
-    	
     </p>
-    <!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
-
-    
-    
+    {% endfilter%}
 	</div>
 	<div class="col-4">
 		{% if name_to_update.profile_pic %}
+		{% if name_to_update.media_type == 'image' %}
 
-		<img src="{{ url_for('static', filename='images/' + name_to_update.profile_pic)}}" width="200" align="right">
+		<img src="data:{{ name_to_update.media_type }}/{{ name_to_update.profile_pic.split('.')[-1] }};base64,{{ name_to_update.media_data|custom_b64encode }}" class="bd-placeholder-img" width="100%" height="250" align="right">
 		
 		{% else %}
 
 		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+		{% endif %}
 
 		{% endif %}
 	
 	</div>
 	</div>
 	</div>
-
-
   </div>
 </div>
-	
-
-	
 <br/>
-{% if current_user.id == 1 %}
+<table class="table table-bordered m-3 p-3 rounded border border-5">
+	<thead>
+		<tr class="table bg-primary">
+<th>CASE ID</th>
+<th>FIRST NAME</th>
+<th>LAST NAME</th>
+<th>CASE ID</th>
+<th>CRIME TYPE</th>
+<th>GENDER</th>
+<th>STATION</th>
+<th>Actions</th>
 
+</tr>
+</thead>
+<tbody>
+{% for data in crime %}
+<tbody>
+<td>{{data["case_id"]}}</td>
+<td>{{data["first_name"]}}</td>
+<td>{{data["last_name"]}}</td>
+<td>{{data["case_id"]}} </td>
+<td>{{data["crime_type"]}} </td>
+<td>{{data["gender"]}} </td>
+<td>{{data["station_id"]}} </td>
+<td>
+	<a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('details_crime', id=data['id']) }}" class="text-success"><i class="fa fa-fw fa-eye"></i> View</a> |
+	<a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('edit_crime', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> 	
+	
 
-<div class="card">
-  <div class="card-header">
-    Update Profile
-  </div>
-  <div class="card-body">
-
-  	<form action="/dashboard/{{ name_to_update.id }}" method="POST" enctype="multipart/form-data">
-		{{ form.hidden_tag() }}
-
-		{{ form.batchno.label(class="form-label") }}
-
-		{{ form.batchno(class="form-control", value=name_to_update.batchno) }}
-		<br/>
-		{{ form.hidden_tag() }}
-
-		{{ form.first_name.label(class="form-label") }}
-
-		{{ form.first_name(class="form-control", value=name_to_update.first_name) }}
-		<br/>
-		{{ form.hidden_tag() }}
-
-		{{ form.last_name.label(class="form-label") }}
-
-		{{ form.last_name(class="form-control", value=name_to_update.last_name) }}
-		<br/>
-		{{ form.hidden_tag() }}
-
-		{{ form.rank.label(class="form-label") }}
-
-		{{ form.rank(class="form-control", value=name_to_update.rank) }}
-		
-		<br/>
-		{{ form.hidden_tag() }}
-
-		{{ form.password_hash.label(class="form-label") }}
-
-		{{ form.password_hash(class="form-control", value=name_to_update. password_hash) }}
-		<br/>
-		<!-- {{ form.hidden_tag() }}
-
-		{{ form.last_name.label(class="form-label") }}
-
-		{{ form.last_name(class="form-control", value=name_to_update.last_name) }} -->
-		<br/>
-		
-
-		
-
-		{{ form.profile_pic.label(class="form-label") }}
-
-		{{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
-		
-
-		<br/>
-		
-		{{ form.submit(class="btn btn-secondary btn-sm") }}
-			
-		{% endif %}
-		
-
-
-	</form>
+</td>
+</tr>
+{% endfor %}		
+</tbody>
+</table>
 
 
 

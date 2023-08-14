@@ -4,7 +4,7 @@ SECRET_KEY = 'my super secret key that no one is supposed to know'
 # Create in-memory database
 DATABASE_FILE = 'our_users.db'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_FILE
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 
 # Flask-Security config
 SECURITY_URL_PREFIX = "/admin"

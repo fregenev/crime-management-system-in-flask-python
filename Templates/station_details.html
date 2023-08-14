@@ -2,98 +2,60 @@
 
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="card">
+	<div class="m-3 p-3 border-start h1 border-danger border-5 shadow"><b>{{name.station_name|upper}}</b></div>
+	<div class="row g-0">
+	  <div class="col-md-4">
+		<img src="data:image/jpeg;base64,{{ name.data|custom_b64encode }}" class="bd-placeholder-img" width="100%" height="250"  role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false">
+
+	  </div>
+	  <div class="col-md-8">
+		<div class="card-body">
+		  <h2 class="lead"><strong>STATION NAME: {{name.station_name|upper}}</strong></h2>
+		  <h5 class="lead"><strong>ABOUT: {{name.about}}</strong></h5>
+		  <h5 class="lead"><strong>LATITUDE: {{name.latitude}}</strong></h5>
+		  <h5 class="lead"><strong>LONGITUDE: {{name.longitude}}</strong></h5>
+		</div>
+	  </div>
 	</div>
+  </div>
 
-	
-{% endfor %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Criminal Record</title>
-	<style>
-		body {
-			background-color: #f2f2f2;
-			font-family: Arial, sans-serif;
-			font-size: 16px;
-			line-height: 1.5;
-			margin: 0;
-			padding: 0;
-		}
+ {# <div class="image-item">
+	<img src="data:image/jpeg;base64,{{ name.data|custom_b64encode }}" alt="{{ name.name }}" width="300">
+	<p>{{ name.name }}</p>
+</div>#}
 
-		.container {
-			max-width: 1700px;
-			margin: 0 auto;
-			padding: 20px;
-			background-color: #fff;
-			box-shadow: 0 0 10px rgba(0,0,0,0.2);
-			border-radius: 5px;
-		}
-
-		h1 {
-			font-size: 36px;
-			margin: 0 0 20px;
-			text-align: center;
-			color: #333;
-		}
-
-		table {
-			border-collapse: collapse;
-			width: 100%;
-			margin-bottom: 20px;
-		}
-
-		th, td {
-			padding: 10px;
-			text-align: left;
-			border-bottom: 1px solid #ddd;
-		}
-
-		th {
-			background-color: #f2f2f2;
-			color: #333;
-		}
-
-		td:first-child {
-			font-weight: bold;
-		}
-
-		.photo {
-			padding: 10px;
-			
-			display: inline-block;
-			
-		}
-
-		.photo img {
-			max-width: 100%;
-			height: auto;
-			border-radius: 5px;
-			box-shadow: 0 0 10px rgba(0,0,0,0.2);
-		}
-	</style>
-</head>
-<body>
-	<div class="container">
-		<h1>Criminal Record</h1>
-		<div class="photo">
-
-			</div>
-		<table>
-			<tr>
-				<th>STATION NAME:</th>
-				<td>{{ name.name}}</td>
-			</tr>
-			<tr>
-				
-		</table>
-        
-	</div>
-</body>
-</html>
+<table class="table table-bordered m-3 p-3 rounded border border-5 ">
+	<thead>
+		<tr class="table bg-primary">
+<th>BATCH NO</th>
+<th>FIRST NAME</th>
+<th>LAST NAME</th>
+<th>GENDER</th>
+<th>STATION</th>
+<th>DATE OF BIRTH</th>
+<th>RANK</th>
+<th>ACTIONS</th>
+</tr>
+</thead>
+<tbody>
+{% for data in officer %}
+<tbody>
+<td>{{data["batchno"]|upper}}</td>
+<td>{{data["first_name"]|upper}} </td>
+<td>{{data["last_name"]|upper}}</td>
+<td>{{data["gender"]|upper}}</td>
+<td>{{data["station_id"]|upper}}</td>
+<td>{{data["dob"]|upper}}</td>
+<td>{{data["rank"]|upper}}</td>
+ 
+  
+<td>
+	<a a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('dashboard', caught_by=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> VIEW</a> |
+	<a a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('update', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> 
+</td>
+</tr>
+{% endfor %}		
+</tbody>
+</table>
 {% endblock %}

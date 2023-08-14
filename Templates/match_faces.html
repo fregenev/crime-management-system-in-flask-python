@@ -10,15 +10,108 @@
         <button type="submit">Match</button>
     </form>
 
-
-
+    {% if best_match_image1 or best_match%}
        
             <h3>Best Match</h3>
             <p>Filename: {{ best_match }}</p>
             <p>Distance: {{ best_score }}</p>
 
-        
+           
 
+            <div class="col">
+                <div class="card">
+                   
+                    <img class="bd-placeholder-img card-img-top" width="10%" height="400" src="data:image/png;base64,{{ result }}" role="img"  preserveAspectRatio="xMidYMid slice" focusable="false"></svg>
+                  <div class="card-body">
+                    <h5 class="card-title">Matching score: {{ score }}</h5>
+                    <p class="card-text">Best match: {{ best_match_image1.fingerprint}}</p>
+                  </div>
+                </div>
+                <div class="card rounded border border-5">
+                    <div >
+                
+                </div>
+                <div class="card-body">
+                
+                <p class="card-text">
+                
+                <div class="container">
+                <div class="row">
+                    <div class="col-8">
+              {%filter upper%}
+            
+            
+            <strong>FIRST NAME:</strong>
+            {{ best_match_image1.first_name }}<br/>
+            
+            <strong>LAST NAME:</strong>
+            {{ best_match.last_name }}<br/>
+            
+            
+            
+            <strong>DATE OF BIRTH:</strong>
+            {{ best_match.dob }}<br/>
+            
+            <strong>GENDER:</strong>
+            {{ best_match.gender }}<br/>
+            
+            <strong>MOTHER NAME:</strong>
+            {{ best_match.mother_name }}<br/>
+            
+            <strong>AGE:</strong>
+            {{ age }}<br/>
+            
+            <strong>PHONE NUMBER:</strong>
+            {{ best_match.phone_No }}<br/>
+            
+            <strong>STATION:</strong>
+            {{ best_match.station_id }}<br/>
+            <strong>CASE_ID:</strong>
+            {{best_match.case_id}}
+            
+            
+            <br/>
+            
+            <strong>CAUGHT BY:</strong>
+            {{ best_match.caught_by_id }}<br/>
+            
+            <strong>Nationality:</strong>
+            {{ best_match.nationality }}<br/>
+            
+            <strong>ADDRESS:</strong>
+            {{ best_match.address }}<br/>
+            
+            <strong>WANTED:</strong>
+            {{ best_match.wanted }}<br/>
+            <strong>DATE ADDED:</strong>
+            {{ best_match.date_added }}<br/>
+            </p>
+            {% endfilter%}
+            </div>
+            <div class="col-4">
+                {%  if best_match.profile_pic %}
+            
+                    <img src="{{ url_for('static', filename='images/' + best_match.profile_pic)}}" class="bd-placeholder-img" width="100%" height="250" align="right">
+                    <img src="{{ url_for('static', filename='images/fingerprint/' + best_match.fingerprint)}}" width="200" align="left"> 
+                    <img src="{{ url_for('static', filename='images/fingerprint/' + best_match.fingerprint)}}" width="190" align="right" > 
+            
+            
+                {% else %}
+            
+                <img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+            
+                {% endif %}
+            
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            {%if result ==error%}
+                {{ error }}
+                {%endif%}
+            {%endif%}
    
 </body>
 </html>

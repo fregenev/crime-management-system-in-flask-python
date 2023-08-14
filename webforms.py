@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, EqualTo, Length
 from wtforms.widgets import TextArea
 from flask_wtf.file import FileField
 from wtforms import validators
+from models import Message,Role,User,Crimerecords,Location
 from wtforms.validators import DataRequired, EqualTo,Email, Length
 from flask_wtf.file import FileField
 from wtforms import StringField, SubmitField,RadioField,IntegerField, DateField ,PasswordField, BooleanField, ValidationError, TextAreaField, SelectField, HiddenField
@@ -29,6 +30,16 @@ class PoliceForm(FlaskForm):
 	# This the where all the info from the Registration_Page gets store in.
     # All the different attributes are each a input field in Registration_Page
     # See the Registration_Page.html file to see how they are connected
+	def validate_batchno(self, batchno_to_check):
+		user = User.query.filter_by(batchno=batchno_to_check.data).first()
+		if user:
+			raise ValidationError('Batch No already exists! Please try a different Batch no')
+	
+	def validate_batchno(self, personal_email_to_check):
+		personal_email = User.query.filter_by(Personal_email=personal_email_to_check.data).first()
+		if personal_email:
+			raise ValidationError('Batch No already exists! Please try a different Batch no')
+	
 
 	batchno = StringField("Batchno", validators=[DataRequired()])
 	first_name = StringField("First_name", validators=[DataRequired()])
@@ -52,7 +63,6 @@ class PoliceForm(FlaskForm):
 					 ('1', 'Constable')],
 					   validators=[DataRequired()])
 	gender = RadioField("Gender", choices=[('MALE', 'Male'), ('FEMALE', 'Female')], validators=[DataRequired()])
-	# station = SelectField("station", choices=[('del', 'deltasate'), ('ab', 'abj'), ('lag','lagos')], validators=[DataRequired()])
 	dob = DateField("DOB", validators=[DataRequired()])
 	password_hash = PasswordField('Password', validators=[DataRequired(), EqualTo('password_hash2', message='Passwords Must Match!')])
 	password_hash2 = PasswordField('Confirm Password', validators=[DataRequired()])
@@ -88,15 +98,14 @@ class CrimeForm(FlaskForm):
 	case_id = StringField("CASE_ID", validators=[DataRequired()])
 	medicals = StringField("MEDICAL", validators=[DataRequired()])
 	address = StringField("ADDRESS", validators=[DataRequired()], widget=TextArea())
-	# rank = SelectField("rank", choices=[('cpp', 'c++'), ('py', 'python'), ('ja','java')], validators=[DataRequired()])
-	wanted = RadioField("Wanted", choices=[('YES', 'YES'), ('NO', 'No')], validators=[DataRequired()])
-	gender = RadioField("Gender", choices=[('MALE', 'Male'), ('FEMALE', 'Female')], validators=[DataRequired()])
-	crime_type = SelectField("crime", choices=[('steal', 'steal'), ('fight', 'fight'), ('cry','cry')], validators=[DataRequired()])
-	dob = DateField("dob", validators=[DataRequired()])
-	profile_pic = FileField("Profile Pic")
-	profile_pic2 = FileField("Profile Pic2")
-	fingerprint = FileField("fingerprint")
-	submit = SubmitField("Submit")
+	wanted = RadioField("WANTED", choices=[('YES', 'YES'), ('NO', 'No')], validators=[DataRequired()])
+	gender = RadioField("GENDER", choices=[('MALE', 'Male'), ('FEMALE', 'Female')], validators=[DataRequired()])
+	crime_type = SelectField("TYPE OF CRIME", choices=[('steal', 'steal'), ('fight', 'fight'), ('cry','cry')], validators=[DataRequired()])
+	dob = DateField("DATE OF BIRTH", validators=[DataRequired()])
+	profile_pic = FileField("PHOTO")
+	profile_pic2 = FileField("EVIDENCE")
+	fingerprint = FileField("UPLOAD FINGER PRINT")
+	submit = SubmitField("SUBMIT")
 
 class PasswordForm(FlaskForm):
 	batchno = StringField("What's Your Email", validators=[DataRequired()])
@@ -114,3 +123,33 @@ class SearchForm(FlaskForm):
         choices=[('first_name', 'first_name'), ('last_name', 'last_name')]
     )
     submit = SubmitField('Search')
+    
+class PoliceUpdateForm(FlaskForm):
+	station = SelectField("station", choices=[('del', 'deltasate'), ('ab', 'abj'), ('lag','lagos')])
+	rank = SelectField("Rank", choices = [('Inspector General of Police','Inspector General of Police'),
+				       ('Additional Inspector General of Police', 'Additional Inspector General of Police'),
+					   ('Deputy Inspector General of Police', 'Deputy Inspector General of Police'),
+					   ('Additional Deputy Inspector General of Police', 'Additional Deputy Inspector General of Police'),
+					     ('Superintendent of Police','Superintendent of Police'),
+                   ('Additional Superintendent of Police','Additional Superintendent of Police'),
+				   ('Senior Assistant Superintendent of Police', 'Senior Assistant Superintendent of Police'),
+				   ('Assistant Superintendent of Police', 'Assistant Superintendent of Police'),
+				   ('Inspector', 'Inspector'),
+				   ('Sub Inspector', 'Sub Inspector'),
+				     ('Sergent','Sergent'),
+					 ('Assisteant Sub Inspector', 'Assisteant Sub Inspector'),
+					 ('Nayek', 'Nayek'),
+					 ('Constable', 'Constable')],
+					   )
+	password_hash = PasswordField('Password', validators=[EqualTo('password_hash2', message='Passwords Must Match!')])
+	password_hash2 = PasswordField('Confirm Password')
+	submit = SubmitField('submit')
+
+
+
+class LocationForm(FlaskForm):
+    about = StringField('ABOUT', validators=[DataRequired()],widget=TextArea())
+    station_name = StringField('STATION NAME', validators=[DataRequired()])
+    latitude = IntegerField('LATITUDE', validators=[DataRequired()])
+    longitude = IntegerField('LONGITUDE', validators=[DataRequired()])
+    submit =SubmitField('Submit')

@@ -1,0 +1,127 @@
+<!-- Pagination Links-->
+{% macro pagination_widget(pagination, endpoint) %}
+<div class="text-right">
+    <a href="{{ url_for(endpoint, page=pagination.prev_num, **kwargs) }}"
+       class="btn btn-outline-dark 
+       {% if pagination.page == 1 %}disabled{% endif %}">
+        &laquo;
+    </a>
+<!-- Loop through the number of pages to display a link for each-->
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+{% if page_num %}
+<!-- Check for the active page and set the link to "Active"-->
+            {% if pagination.page == page_num %}
+            <a href="{{ url_for(endpoint, page=page_num, **kwargs) }}"
+               class="btn btn-dark">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for(endpoint, page=page_num, **kwargs) }}"
+               class="btn btn-outline-dark">
+                {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+    <a href="{{ url_for(endpoint, page=pagination.next_num, **kwargs) }}"
+       class="btn btn-outline-dark 
+       {% if pagination.page == pagination.pages %}disabled{% endif %}">
+        &raquo;
+    </a>
+</div>
+<p class="text-right mt-3">
+   Showing page {{ pagination.page }} of {{ pagination.pages }}
+</p>
+{% endmacro %}
+
+
+
+{% macro data_widget(endpoint) %}
+<div class="table-wrapper">
+   
+    <div class="row">
+        
+    </div>
+</div>
+<table class="table table-bordered m-3 p-3 rounded border border-5 ">
+    <thead>
+        <tr class="table bg-warning">
+<th>BATCH NO</th>
+<th>FIRST NAME</th>
+<th>LAST NAME</th>
+<th>GENDER</th>
+<th>STATION</th>
+<th>DATE OF BIRTH</th>
+<th>RANK</th>
+<th>ACTIONS</th>
+</tr>
+</thead>
+<tbody>
+{% for data in endpoint %}
+<tbody>
+<td>{{data["batchno"]|upper}}</td>
+<td>{{data["first_name"]|upper}} </td>
+<td>{{data["last_name"]|upper}}</td>
+<td>{{data["gender"]|upper}}</td>
+<td>{{data["station_id"]|upper}}</td>
+<td>{{data["dob"]|upper}}</td>
+<td>{{data["rank"]|upper}}</td>
+ 
+  
+<td>
+    <a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('dashboard', caught_by=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> VIEW</a> |
+    <a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('update', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> 
+</td>
+</tr>
+{% endfor %}		
+</tbody>
+</table>
+{% endmacro %}
+
+
+{% macro crime_widget(endpoint) %}
+<div class="container-fluid">
+    <div class="table-wrapper">
+        <table class="table table-bordered">
+            <thead>
+                <tr class="table bg-danger">
+        <th>CASE ID</th>
+        <th>FIRST NAME</th>
+        <th>LAST NAME</th>
+        <th>CRIME TYPE</th>
+        <th>STATION</th>
+        <th>CAUGHT BY</th>
+        <th>GENDER</th>
+        <th>DATE</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for data in endpoint %}
+    <tbody>
+        <td>{{data["case_id"]}}</td>
+        <td>{{data["first_name"]}}</td>
+        <td>{{data["last_name"]}}</td>
+        <td>{{data["crime_type"]}} </td></td>
+        <td>{{data["station_id"]}} </td></td>
+        <td>{{data["caught_by_id"]}} </td></td>
+        <td>{{data["gender"]}} </td></td>
+        <td>{{data["date_added"]}} </td></td>
+        
+        <!-- <td align ="center"></td> -->
+        
+        <td>
+            <a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('details_crime', id=data['id']) }}" class="text-success"><i class="fa fa-fw fa-eye"></i> View</a> |
+            <a type="button" class="btn btn-outline-success btn-sm" href="{{ url_for('edit_crime', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> 	
+            {#<a href="{{ url_for('deletecrme', id=data['id']) }}" class="text-danger"><i class="fa fa-fw fa-trash"></i> Delete</a> |#}
+            
+
+    </td>
+</tr>
+{% endfor %}		
+</tbody>
+</table>
+{% endmacro %}
+

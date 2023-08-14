@@ -1,31 +1,35 @@
-<link href="../static/dist/css/bootstrap.min.css" rel="stylesheet">
-<nav class="navbar navbar-expand-lg bg-dark">
-  <link href="navbar.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    
-    {% if current_user.profile_pic %}
 
-	{% if current_user.media_type == 'image' %}
-		<img src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" alt="Image" align="right" img class="img-profile rounded-circle" width="50x50">
-	{% elif current_user.media_type == 'audio' %}
-		<audio controls>
-			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" img class="img-profile rounded-circle" width="60x60">
-			Your browser does not support the audio element.
-		</audio>
-	{% elif current_user.media_type == 'video' %}
-		<video width="320" height="240" controls>
-			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" img class="img-profile rounded-circle" width="60x60" type="video/mp4">
-			Your browser does not support the video tag.
-		</video>
-	{% endif %}
+    {#{% if current_user.profile_pic %}
 
-	{% endif %}
+    {% if current_user.media_type == 'image' %}
+      <img src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" alt="Image" align="right" img class="img-profile rounded-circle" width="20x20">
+    {% elif current_user.media_type == 'audio' %}
+      <audio controls>
+        <source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" img class="img-profile rounded-circle" width="60x60">
+        Your browser does not support the audio element.
+      </audio>
+    {% elif current_user.media_type == 'video' %}
+      <video width="320" height="240" controls>
+        <source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" img class="img-profile rounded-circle" width="60x60" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    {% endif %}
+  
+    {% endif %} #}
 
+
+    <a class="navbar-brand" href="{{ url_for('index') }}">PROFILE</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">   
-        <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('index')}}">PROFILE</a>
-        </li>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+       
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             OFFICER
@@ -33,11 +37,12 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{url_for('officer')}}">VIEW OFFICER</a></li>
             <li><a class="dropdown-item" href="{{url_for('allofficer')}}">VIEW ALL OFFICER</a></li>
-            <li><a class="dropdown-item" href="{{url_for('register')}}">REGISTER OFFICER</a></li>
-            <!-- <li><hr class="dropdown-divider"></li> -->
-            <li><a class="dropdown-item" href="{{url_for('station')}}">POLICE SATION</a></li>
           </ul>
-
+          {% if current_user.rank == 'Inspector General of Police'%}
+          <li class="nav-item ">
+            <a class="nav-link text-white" href="{{url_for('register')}}">REGISTER OFFICER</a>
+          </li>
+          {% endif%}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               RECORDS
@@ -46,63 +51,56 @@
               <li><a class="dropdown-item" href="{{url_for('view')}}">VIEW RECORDS</a></li>
               <li><a class="dropdown-item" href="{{url_for('view_all')}}">VIEW ALL RECORDS</a></li>
               <li><a class="dropdown-item" href="{{url_for('wanted')}}">MOST WANTED</a></li>
-              <!-- <li><hr class="dropdown-divider"></li> -->
-              <!-- <li><a class="dropdown-item" href="#">POLICE SATION</a></li> -->
             </ul>
 
-        </li>
+            <li class="nav-item ">
+              <a class="nav-link text-white" href="{{url_for('station')}}">POLICE SATION</a>
+            </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('addcrime')}}">ADD CRIME</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              MATCH
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{url_for('match')}}">MATCH FINGERPRINT</a></li>
+              <li><a class="dropdown-item" href="{{url_for('face_match')}}">FACE MATCH</a></li>
+            </ul>
+          
+
         <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('addcrime')}}">ADDCRIME</a>
+          <a class="nav-link text-white" href="{{ url_for('send_message')}}">SEND MESSAGE</a>
         </li>
-         <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="{{url_for('match')}}">MATCH</a>
-        </li> 
-        {%if current_user.batchno == "admin"%}
-        <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="/admin">ADMIN</a>
+
+         <li class="nav-item text-white">
+          <a type="button"  class="nav-link text-white" href="{{ url_for('map')}}">VIEW MAP</a>
         </li>
-        {%endif%}
-        <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="/send_message">MESSAGES</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="/map">MAP</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link px-2 text-white" aria-current="page" href="/map1">MAP1</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">wamted</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <h3 class="text-success">Welcome : {{current_user.first_name }} {{current_user.last_name }}</h3>
-        </li>
-      </ul>
-      
         
+        
+        <li class="nav-item text-white">
+          <a type="button"  class="nav-link text-white" href="/admin" >ADMIN</a>
+        </li>
+        <li class="nav-item">
+          
+        </li>
 
-      </li>
-    </div>
-    <form method="POST" action="{{ url_for('search') }}">
-      <input type="text" name="search_term" placeholder="Enter your search term">
-      <select name="filter_option">
-        <option value="last_name">STATION</option>
+
+      </ul>
+      <form method="POST" action="{{ url_for('search')}}" class="d-flex">
+        <input class="form-control me-2" type="text" name="search_term" placeholder="Enter your search term">
+      <select class="form-select" name="filter_option" class="form-label">
+        <option  class="dropdown-item d-flex align-items-center gap-2 py-2" value="last_name">STATION </option>
         <option value="first_name">FIRST_NAME</option>
-        <option value="c_first_name">CRIMINAL FIRST NAME</option>
+        <option  value="c_first_name">CRIMINAL FIRST NAME</option>
       </select>
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+      <button  class="btn btn-outline-secondary" type="submit" class="btn btn-primary">Search</button>
+     </form>
+     <li class="nav-item">
+      <a type="button" class="btn btn-outline-primary" class="nav-link text-white" href="{{ url_for('logout')}}">Logout</a>
+    </li>
+  </ul>
+    </div>
   </div>
-</div>
-<a href="{{url_for('logout')}}" class="btn btn-primary btn-block">Logout</a>
-</div> 
 </nav>
-

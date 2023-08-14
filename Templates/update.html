@@ -2,17 +2,6 @@
 
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-
-	
-{% endfor %}
-<script src="../static/js/app.js"></script>
-<h2>Dashboard</h2>
 <br/>
 
 <div class="card">
@@ -27,33 +16,42 @@
 <div class="row">
 	<div class="col-8">
 
-<strong>Name:</strong>
-{{name_to_update.name }}<br/>
+<strong>BATCH_NUMBER:</strong>
+{{name_to_update.batchno }}<br/>
 
-<strong>Username:</strong>
-{{ name_to_update.username }}<br/>
+<strong>FIRST NAME:</strong>
+{{ name_to_update.first_name }}<br/>
 
-<strong>User Id:</strong>
-{{ name_to_update.id }}<br/>
+<strong>LAST NAME:</strong>
+{{ name_to_update.last_name }}<br/>
 
-<strong>Email:</strong>
-{{ name_to_update.email }}<br/>
+<strong>rank:</strong>
+{{ name_to_update.rank }}<br/>
 
-<strong>Favorite Color:</strong>
-{{ name_to_update.favorite_color }}<br/>
+<strong>dob:</strong>
+{{ name_to_update.dob }}<br/>
 
-<strong>About Author:</strong>
-{{ name_to_update.about_author }}<br/>
+<strong>gender:</strong>
+{{ name_to_update.gender }}<br/>
 
+<strong>AGE</strong>
+
+	   
+{{age}}
+
+<br/>
 <strong>Profile Pic:</strong>
 {{ name_to_update.profile_pic }}<br/>
 
 <strong>Date Joined:</strong>
 {{ name_to_update.date_added }}<br/>
 
-
-
-
+<strong>ACTIVE:</strong>
+	{% if name_to_update.active == true%}
+	&#9989
+	{%else%}
+	&#128683
+	{% endif %}<br/>
 	
 </p>
 <!-- <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a> -->
@@ -64,9 +62,9 @@
 
 </div>
 <div class="col-4">
-	{% if name_to_update.profile_pic %}
+	{% if name_to_update.media_type == 'image' %}
 
-	<img src="{{ url_for('static', filename='images/' + name_to_update.profile_pic)}}" width="200" align="right">
+	<img src="data:{{ name_to_update.media_type }}/{{ name_to_update.profile_pic.split('.')[-1] }};base64,{{ name_to_update.media_data|custom_b64encode }}" class="bd-placeholder-img" width="100%" height="200" align="right">
 	
 	{% else %}
 
@@ -82,7 +80,6 @@
 </div>
 </div>
  
-{% if id != current_user.id %} 
 
 	<h1>Update User...</h1>
 	<br/>
@@ -90,17 +87,22 @@
 	<form action="/update/{{ name_to_update.id }}" method="POST" enctype="multipart/form-data">
 		{{ form.hidden_tag() }}
 
+		{{ form.station.label(class="form-label") }}
+
+		{{ form.station(class="form-control", value=name_to_update.station) }}
+		<br/>
 		{{ form.rank.label(class="form-label") }}
 
 		{{ form.rank(class="form-control", value=name_to_update.rank) }}
 		
 		<br/>
+		{{ form.password_hash.label(class="form-label") }}
 
-		{{ form.station.label(class="form-label") }}
+		{{ form.password_hash(class="form-control", value=name_to_update.password_hash) }}
+		<br/>
+		{{ form.password_hash2.label(class="form-label") }}
 
-		{{ form.station(class="form-control", value=name_to_update.station) }}
-		
-
+		{{ form.password_hash2(class="form-control", value=name_to_update.password_hash) }}
 		<br/>
 		
 		{{ form.submit(class="btn btn-secondary") }}
@@ -112,16 +114,6 @@
 </div>
 <br/><br/><br/>
 
-<!-- {% else %}
- <div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  Sorry! You Can't Edit This User...
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-
-	<h2>Access Denied!</h2>
-	<p>Sorry, you cannot access this user profile...</p>
-
-{% endif %} -->
 
 
 {% endblock %}

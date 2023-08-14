@@ -1,106 +1,395 @@
 {% extends 'base.html' %}
 
-{% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+{% block content %}
+{% if current_user.rank == 'Inspector General of Police'%}
+
+<main class="bg_gray pt-5 pb-5">
+
+	<h1 class="h1 text-center mb-5"> Create Staff Account </h1>
+
+	<section class="d-flex justify-content-center">
+
+		<form method="POST" enctype="multipart/form-data" class="form-large">
+			{{ form.hidden_tag() }}
+
+
+			<div class="row">
+
+				{#batchno#}
+				<div class="col-sm-6">
+					{{ form.batchno.label(class="form-label") }}
+
+					{% if form.batchno.errors %}
+						{{ form.batchno( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.batchno.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.batchno(
+							class="form-control",
+							placeholder="Batch Number"
+						) }}
+					{% endif %}
+				</div>
+
+				{# first name #}
+				<div class="col-sm-6">
+					{{ form.first_name.label(class="form-label") }}
+
+					{% if form.first_name.errors %}
+						{{ form.first_name( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.first_name.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.first_name(
+							class="form-control",
+							placeholder="First Name"
+						) }}
+					{% endif %}
+				</div>
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#last name#}
+				<div class="col-sm-6">
+					{{ form.last_name.label(class="form-label") }}
+
+					{% if form.last_name.errors %}
+						{{ form.last_name( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.last_name.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.last_name(
+							class="form-control",
+							placeholder="Last Name"
+						) }}
+					{% endif %}
+				</div>
+
+				
+				{#gender#}
+				<div class="col-sm-6">
+					{{ form.gender.label(class="form-label") }}
+
+					{{ form.gender(
+						class="form-control",
+						placeholder="Address"
+					) }}
+				</div>
+{#date of birth#}
+				<div class="col-sm-6">
+					{{ form.dob.label(class="form-label") }}
+
+					{{ form.dob(
+						class="form-control",
+						placeholder="DATE OF BIRTH"
+					) }}
+				</div>
+                {#upload phtot #}
+                <div class="col-sm-6">
+                    <br/> 
+
+                    <input class="form-control form-control-lg" aria-label="Large file input example" type="file" name="media" accept="image/*" required>
+
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#rank#}
+				<div class="col-sm-6">
+					{{ form.rank.label(class="form-label") }}
+					{{ form.rank(class="form-select") }}
+				</div>
+
+				{#phone number #}
+				<div class="col-sm-6">
+					{{ form.phone_no.label(class="form-label") }}
+
+					{% if form.phone_no.errors %}
+						{{ form.phone_no( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.phone_no.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.phone_no(
+							class="form-control",
+							placeholder="Phone Number"
+						) }}
+					{% endif %}
+				</div>
+
+
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#personal_email#}
+				<div class="col-sm-6">
+					{{ form.personal_email.label(class="form-label") }}
+
+					{% if form.personal_email.errors %}
+						{{ form.personal_email( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.personal_email.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.personal_email(
+							class="form-control",
+							placeholder="Personal Email"
+						) }}
+					{% endif %}
+				</div>
+
+				{#medicals#}
+				<div class="col-sm-6">
+					{{ form.password_hash.label(class="form-label") }}
+
+					{% if form.password_hash.errors %}
+						{{ form.password_hash( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.password_hash.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.password_hash(
+							class="form-control",
+							placeholder="Password"
+						) }}
+					{% endif %}
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{{ form.password_hash2.label(class="form-label") }}
+
+					{% if form.password_hash2.errors %}
+						{{ form.password_hash2( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.password_hash2.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.password_hash2(
+							class="form-control",
+							placeholder="Comfirm Password"
+						) }}
+					{% endif %}
+
+				
+				<br/> 
+			
+			
+		    </div>
+			
+
+			
+
+		
+
+
+			
+			<div class="row mt-5">
+				
+				
+				<p class="text-break ">
+					I agree all the terms and condition and cirtify that all the information I gave above is true. If the authority find any
+					flase information I will accept any dicision that the authority takes.
+				</p>
+			</div>
+
+			<div class="d-flex justify-content-end mt-4 mb-3">
+				{{ form.submit(class="btn btn-lg btn-primary") }}
+			</div>
+
+		</form>
+
+	</section>
+
 	</div>
 
-	
-{% endfor %}
-
-
-{% if name %}
-	<h1>User Added!</h1>
-	<br/><br/>
-<table class="table table-hover table-bordered table-striped">
-
-
-</table>
-	
-
+</main>
 {% else %}
-	<h1>REGISTER OFFICER:</h1>
-	<br/>
-<div class="shadow p-3 mb-5 bg-body rounded">
-	<form method="POST" enctype="multipart/form-data">
-		{{ form.csrf_token }}
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/error/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/error/oxygen.fonts.css') }}">
+<div class="container">
+        <div class="error">
+            <h1>404</h1>
+            <h2>error</h2>
+            <p>No hemos podido encontrar lo que estás buscando. Revisa la URL e intentalo nuevamente</p>
+            <p class="subtitle">ERR_NOT_FOUND</p>
+        </div>
+        <div class="stack-container">
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist: 125px; --scaledist: .75; --vertdist: -25px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist: 100px; --scaledist: .8; --vertdist: -20px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist:75px; --scaledist: .85; --vertdist: -15px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist: 50px; --scaledist: .9; --vertdist: -10px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist: 25px; --scaledist: .95; --vertdist: -5px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="perspec" style="--spreaddist: 0px; --scaledist: 1; --vertdist: 0px;">
+                    <div class="card">
+                        <div class="writing">
+                            <div class="topbar">
+                                <div class="red"></div>
+                                <div class="yellow"></div>
+                                <div class="green"></div>
+                            </div>
+                            <div class="code">
+                                <div class="centered">
+                                    <img src="{{ url_for('static', filename='images/error/sign_question.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <footer>
+        <p class="copyright">©2020 Grupo Multimedios Argentina</p>
+    </footer>
+    </div>
+    <style>
+        footer {
+            position: fixed;
+            bottom:0;
+            height: 40px;
+            border-top-color:#33333342;
+            border-top-style:solid;
+            border-top-width:1px;
+            width: 100%;
+        }
 
-		<br/>
+        p.copyright {
+            position:absolute;
+            margin:0;
+            top: 9px;
+            width: 100%;
+            color: #000000a3;
+            font-size: 1em;
+            text-align: center;
+            bottom:0;
+        }
+    </style>
+   
 
-		{{ form.batchno.label(class="form-label") }}
-
-		{{ form.batchno(class="form-control") }}
-		<br/>
-
-		{{ form.first_name.label(class="form-label") }}
-
-		{{ form.first_name(class="form-control") }}
-		<br/>
-
-		{{ form.last_name.label(class="form-label") }}
-
-		{{ form.last_name(class="form-control") }}
-		<br/>
-		{{ form.gender.label(class="form-label") }}
-
-		{{ form.gender(class="form-control") }}
-		
-		<br/>
-		
-		{{ form.dob.label(class="form-label") }}
-
-		{{ form.dob(class="form-control") }}
-		<br/>
-		
-		{{ form.rank.label(class="form-label") }}
-
-		{{ form.rank(class="form-control") }}
-	
-		<br/>
-		
-		{{ form.personal_email.label(class="form-label") }}
-
-		{{ form.personal_email(class="form-control") }}
-		<br/>
-		{{ form.phone_no.label(class="form-label") }}
-
-		{{ form.phone_no(class="form-control") }}
-		<br/>
-		
-		<!-- {{ form.active.label(class="form-label") }}
-
-		{{ form.active() }} -->
-		<br/>
-		
-		{{ form.password_hash.label(class="form-label") }}
-
-		{{ form.password_hash(class="form-control") }}
-		<br/>
-
-		{{ form.password_hash2.label(class="form-label") }}
-
-		{{ form.password_hash2(class="form-control") }}
-		
-		<br/>
-		<input type="file" name="media" accept="image/*, audio/*, video/*" required>
-        <input type="submit" value="Upload">
-		<br/>
-
-		{{ form.submit(class="btn btn-secondary") }}
-
-
-	</form>
-</div>
-<br/><br/><br/>
-<table class="table table-hover table-bordered table-striped">
-
-
-
-</table>
-{% endif %}
-
+<script type="text/javascript" src="{{ url_for('static', filename='js/error/script.js') }}"></script>
+{%endif%}
 {% endblock %}

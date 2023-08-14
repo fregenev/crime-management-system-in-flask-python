@@ -2,119 +2,290 @@
 
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<main class="bg_gray pt-5 pb-5">
+
+	<h1 class="h1 text-center mb-5"> RECORD CRIME FOR {{ current_user.station_id|upper }} </h1>
+
+	<section class="d-flex justify-content-center">
+
+		<form method="POST" enctype="multipart/form-data" class="form-large">
+			{{ form.hidden_tag() }}
+
+
+			<div class="row">
+
+				{#first name#}
+				<div class="col-sm-6">
+					{{ form.first_name.label(class="form-label") }}
+
+					{% if form.first_name.errors %}
+						{{ form.first_name( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.first_name.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.first_name(
+							class="form-control",
+							placeholder="First name"
+						) }}
+					{% endif %}
+				</div>
+
+				{# last name #}
+				<div class="col-sm-6">
+					{{ form.last_name.label(class="form-label") }}
+
+					{% if form.last_name.errors %}
+						{{ form.last_name( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.last_name.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.last_name(
+							class="form-control",
+							placeholder="Last name"
+						) }}
+					{% endif %}
+				</div>
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#mother_name#}
+				<div class="col-sm-6">
+					{{ form.mother_name.label(class="form-label") }}
+
+					{% if form.mother_name.errors %}
+						{{ form.mother_name( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.mother_name.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.mother_name(
+							class="form-control",
+							placeholder="mother_name"
+						) }}
+					{% endif %}
+				</div>
+
+				{#motive#}
+				<div class="col-sm-6">
+					{{ form.motive.label(class="form-label") }}
+
+					{% if form.motive.errors %}
+						{{ form.motive( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.motive.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.motive(
+							class="form-control",
+							placeholder="motive"
+						) }}
+					{% endif %}
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#nationality#}
+				<div class="col-sm-6">
+					{{ form.nationality.label(class="form-label") }}
+					{{ form.nationality(class="form-control") }}
+				</div>
+
+				{#phone number #}
+				<div class="col-sm-6">
+					{{ form.phone_no.label(class="form-label") }}
+
+					{% if form.phone_no.errors %}
+						{{ form.phone_no( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.phone_no.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.phone_no(
+							class="form-control",
+							placeholder="Phone Number"
+						) }}
+					{% endif %}
+				</div>
+
+
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#case_id#}
+				<div class="col-sm-6">
+					{{ form.case_id.label(class="form-label") }}
+
+					{% if form.case_id.errors %}
+						{{ form.case_id( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.case_id.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.case_id(
+							class="form-control",
+							placeholder="case id"
+						) }}
+					{% endif %}
+				</div>
+
+				{#medicals#}
+				<div class="col-sm-6">
+					{{ form.medicals.label(class="form-label") }}
+
+					{% if form.medicals.errors %}
+						{{ form.medicals( class="form-control is-invalid" ) }}
+						<div class="invalid-feedback">
+							{% for error in form.medicals.errors %}
+								<span>  {{ error }}   </span>
+							{% endfor %}
+						</div>
+
+					{% else %}
+						{{ form.medicals(
+							class="form-control",
+							placeholder="medicals"
+						) }}
+					{% endif %}
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#address#}
+				<div class="col-sm-6">
+					{{ form.address.label(class="form-label") }}
+
+					{{ form.address(
+						class="form-control",
+						placeholder="Address"
+					) }}
+				</div>
+
+				
+				<br/> 
+			
+			{#photo#}
+			<div class="col-sm-6">
+				UPLOAD EVIDENCE
+				<input class="form-control form-control-smg" 
+				aria-label="Large file input example" 
+				type="file" 
+				name="media" accept="image/*, audio/*, video/*" required>
+
+			</div>
+		</div>
+			<div class="row mt-2">
+
+				{#gender#}
+				<div class="col-sm-6">
+					{{ form.gender.label(class="form-label") }}
+
+					{{ form.gender(
+						class="form-control",
+						placeholder="Address"
+					) }}
+				</div>
+
+				<div class="col-sm-6">
+					{{ form.dob.label(class="form-label") }}
+
+					{{ form.dob(
+						class="form-control",
+						placeholder="DATE OF BIRTH"
+					) }}
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#crime_type#}
+				<div class="col-sm-6">
+					{{ form.crime_type.label(class="form-label") }}
+
+					{{ form.crime_type(
+						class="form-select",
+						placeholder="crime_type"
+					) }}
+				</div>
+
+				<div class="col-sm-6">
+					{{ form.wanted.label(class="form-label") }}
+
+					{{ form.wanted(
+						class="form-control",
+						placeholder="wanted"
+					) }}
+				</div>
+
+			</div>
+
+
+			<div class="row mt-2">
+
+				{#photo#}
+				<div class="col-sm-6">
+					{{ form.profile_pic.label(class="form-label") }}
+					{{ form.profile_pic( class="form-control" ) }}
+				</div>
+
+				{#finger print#}
+				<div class="col-sm-6">
+					{{ form.fingerprint.label(class="form-label") }}
+					{{ form.fingerprint(class="form-control") }}
+				</div>
+			</div>
+
+			<div class="row mt-5">
+				
+				
+				<p class="text-break ">
+					I agree all the terms and condition and cirtify that all the information I gave above is true. If the authority find any
+					flase information I will accept any dicision that the authority takes.
+				</p>
+			</div>
+
+			<div class="d-flex justify-content-end mt-4 mb-3">
+				{{ form.submit(class="btn btn-lg btn-primary") }}
+			</div>
+
+		</form>
+
+	</section>
+
 	</div>
 
-	
-{% endfor %}
-
-
-{% if name %}
-	<h1>User Added!</h1>
-	<br/><br/>
-<table class="table table-hover table-bordered table-striped">
-
-
-</table>
-	
-
-{% else %}
-	<h1>ADD CRME:</h1>
-	<br/>
-<div class="shadow p-3 mb-5 bg-body rounded">
-	<form method="POST" enctype="multipart/form-data">
-		#{{ form.hidden_tag() }}
-
-		<br/>
-
-		{{ form.first_name.label(class="form-label") }}
-
-		{{ form.first_name(class="form-control") }}
-		<br/>
-
-		{{ form.last_name.label(class="form-label") }}
-
-		{{ form.last_name(class="form-control") }}
-		<br/>
-
-		{{ form.mother_name.label(class="form-label") }}
-
-		{{ form.mother_name(class="form-control") }}
-		<br/>
-		{{ form.motive.label(class="form-label") }}
-
-		{{ form.motive(class="form-control") }}
-		<br/>
-		{{ form.nationality.label(class="form-label") }}
-
-		{{ form.nationality(class="form-control") }}
-		<br/>
-		{{ form.phone_no.label(class="form-label") }}
-
-		{{ form.phone_no(class="form-control") }}
-		<br/>
-		{{ form.case_id.label(class="form-label") }}
-
-		{{ form.case_id(class="form-control") }}
-		<br/>
-		{{ form.medicals.label(class="form-label") }}
-
-		{{ form.medicals(class="form-control") }}
-		<br/>
-		{{ form.address.label(class="form-label") }}
-
-		{{ form.address(class="form-control") }}
-		<br/>
-		{{ form.gender.label(class="form-label") }}
-
-		{{ form.gender(class="form-control") }}
-		<br/>
-		{{ form.crime_type.label(class="form-label") }}
-
-		{{ form.crime_type(class="form-control") }}
-		<br/>
-		
-		{{ form.dob.label(class="form-label") }}
-
-		{{ form.dob(class="form-control") }}
-		<br/>
-		
-		{{ form.wanted.label(class="form-label") }}
-
-		{{ form.wanted(class="form-control") }}
-		<br/>
-		
-		{{ form.profile_pic.label(class="form-label") }}
-
-		{{ form.profile_pic(class="form-control") }}
-		<br/>
-		
-		{{ form.profile_pic2.label(class="form-label") }}
-
-		{{ form.profile_pic2(class="form-control") }}
-		<br/>
-		<br/>
-		
-		{{ form.fingerprint.label(class="form-label") }}
-
-		{{ form.fingerprint(class="form-control") }}
-		<br/>
-
-		{{ form.submit(class="btn btn-secondary") }}
-
-
-	</form>
-</div>
-<br/><br/><br/>
-<table class="table table-hover table-bordered table-striped">
-
-
-
-</table>
-{% endif %}
+</main>
 
 {% endblock %}

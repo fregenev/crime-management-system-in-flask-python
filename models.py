@@ -69,7 +69,12 @@ class User(db.Model, UserMixin):
     date_added = db.Column(db.DateTime, default=datetime.utcnow) 
 	# Do some password stuff!
     password_hash = db.Column(db.String(128))
-
+    
+    @property
+    def password(self):
+        return self.password
+    
+    @password.setter
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -113,8 +118,11 @@ class Crimerecords(db.Model):
 	gender = db.Column(db.String(120), nullable=False, unique=False)
 	dob = db.Column(db.DateTime, nullable=False, unique=False)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
-	profile_pic = db.Column(db.String(),nullable=True)
-	profile_pic2 = db.Column(db.String(),nullable=True)
+	profile_pic = db.Column(db.String())
+	evidence = db.Column(db.String())
+	media_type = db.Column(db.String(10))
+	media_data = db.Column(LargeBinary)
+        
     
     
 	def __repr__(self):#
@@ -122,11 +130,24 @@ class Crimerecords(db.Model):
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    station_name=db.Column(db.String(20))
     name = db.Column(db.String(50))
+    data = db.Column(db.LargeBinary(length=(2**32)-1))
+    about = db.Column(db.String(150))
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     station_crimerecord = db.relationship('Crimerecords', foreign_keys='Crimerecords.station', backref='station_id')
     station_user = db.relationship('User', foreign_keys='User.station', backref='station_id')
 
     def __repr__(self):
-        return (self.name)
+        return (self.station_name)
+    
+    def __init__(self, name, data,about,latitude,longitude,station_name):
+        self.name = name
+        self.data = data
+        self.about= about
+        self.latitude=latitude
+        self.longitude=longitude
+        self.station_name=station_name
+        

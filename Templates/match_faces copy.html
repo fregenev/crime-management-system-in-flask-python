@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Matching</title>
+</head>
+<body>
+    <h1>Face Matching</h1>
+    <form action="{{ url_for('face_match') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Match</button>
+    </form>
+
+
+
+       
+            <h3>Best Match</h3>
+            <p>Filename: {{ best_match }}</p>
+            <p>Distance: {{ best_score }}</p>
+
+        
+
+   
+</body>
+</html>

@@ -1,160 +1,118 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
 
-	
-{% endfor %}
-
-
-<style>
-	.cropped-image {
-		width: 300px;
-		height: 300px;
-		object-fit: cover;
-	}
-</style>
-<h2>Dashboard</h2>
-<br/>
-
-<div class="card">
-<div class="card-header">
-{{ current_user.name }}
-</div>
-<div class="card-body">
-
-<p class="card-text">
+	<div class="card" >
+  <div class="m-3 p-3 shadow alert alert-dark" class="" class="card-header">
+	<p class="h3">PROFILE</p>
+  </div>
+  <div class="card-body">
+   
+    <p class="card-text">
 
 <div class="container">
-<div class="row">
-	<div class="col-8">
-
-<strong>BATCH_NUMBER:</strong>
-{{ current_user.batchno }}<br/>
-
-<strong>FIRST_NAME:</strong>
-{{ current_user.first_name }}<br/>
-
-<strong>LAST_NAME:</strong>
-{{ current_user.last_name }}<br/>
-
-<strong>RANK:</strong>
-{{ current_user.rank }}<br/>
-
-<strong>STATION:</strong>
-{{ current_user.station_id }}<br/>
-
-<strong>SUPERVISOR:</strong>
-{{ current_user.Supervisor_id }}<br/>
-
-<strong>PERSONAL_EMAIL:</strong>
-{{ current_user.Personal_email }}<br/>
-
-<strong>Date Joined:</strong>
-{{ current_user.date_added }}<br/>
-
-
+	<div class="row">
+		<div class="col-8">
+{% filter upper %}
+			<strong>BATCH_NUMBER:</strong>
+			{{ current_user.batchno }}<br/>
+			
+			<strong>FIRST_NAME:</strong>
+			{{ current_user.first_name }}<br/>
+			
+			<strong>LAST_NAME:</strong>
+			{{ current_user.last_name }}<br/>
+			
+			<strong>RANK:</strong>
+			{{ current_user.rank }}<br/>
+			
+			<strong>STATION:</strong>
+			{{ current_user.station_id }}<br/>
+			
+			<strong>SUPERVISOR:</strong>
+			{{ current_user.Supervisor_id }}<br/>
+			
+			<strong>PERSONAL_EMAIL:</strong>
+			{{ current_user.Personal_email }}<br/>
+			
+			<strong>Date Joined:</strong>
+			{{ current_user.date_added }}<br/>
 
 
 	
-</p>
-<a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a>
+{% endfilter %}
+    	
+    </p>
+    <a href="{{ url_for('logout')}}" id="myButton" class="btn btn-secondary btn-sm">Logout</a>
+<div id="spinner" class="hidden"></div>
+    <br/>
 
-<a href="{{ url_for('update', id=current_user.id)}}" class="btn btn-secondary btn-sm">Update Profile</a>
+    
+	</div>
+	<div class="col-4">
+		{% if current_user.profile_pic %}
 
-<a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger btn-sm">Delete</a>
-<br/><br/>
-
-
-</div>
-<div class="col-4">
-	{% if current_user.profile_pic %}
-
-	<h3>{{ current_user.profile_pic }}</h3>
-	{% if current_user.media_type == 'image' %}
-		<img src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" alt="Image" align="right" class="cropped-image">
-	{% elif current_user.media_type == 'audio' %}
-		<audio controls>
-			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}">
-			Your browser does not support the audio element.
-		</audio>
-	{% elif current_user.media_type == 'video' %}
-		<video width="320" height="240" controls>
-			<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" type="video/mp4">
-			Your browser does not support the video tag.
-		</video>
-	{% endif %}
-
-	{% endif %}
-
-</div>
-</div>
-</div>
-		
-
+	{#	<h3>{{ current_user.profile_pic }}</h3>#}
+		{% if current_user.media_type == 'image' %}
+			<img src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" class="bd-placeholder-img" width="100%" height="200" align="right">
+		{% elif current_user.media_type == 'audio' %}
+			<audio controls>
+				<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}">
+				Your browser does not support the audio element.
+			</audio>
+		{% elif current_user.media_type == 'video' %}
+			<video width="320" height="240" controls>
+				<source src="data:{{ current_user.media_type }}/{{ current_user.profile_pic.split('.')[-1] }};base64,{{ current_user.media_data|custom_b64encode }}" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		{% endif %}
 	
+		{% endif %}
+	
+	</div>
+	</div>
+	</div>
 
 
-
-
-
-
+  </div>
 </div>
-
-
-
-
-
-</div>
-
+	
 
 	
 <br/>
 
 <div class="card">
-  <div class="card-header">
-    Update Profile
+  <div class="m-3 p-3 shadow alert alert-dark" class="" class="card-header">
+	<p  class="h4">CHANGE PASSWORD</p> 
   </div>
   <div class="card-body">
 
   	<form  method="POST" enctype="multipart/form-data">
-		{{ form.hidden_tag() }}
-
-
-
-		
-		
-		
-		<br/>
-
-		
-
-		{{ form.old_password.label(class="form-label") }}
-
-		{{ form.old_password(class="form-control") }}
-		
-
-		<br/>
-		{{ form.confirm_password.label(class="form-label") }}
-
-		{{ form.confirm_password(class="form-control") }}
-		<br/>
-
-		{{ form.new_password.label(class="form-label") }}
-
-		{{ form.new_password(class="form-control") }}
-		
-		<br/>
-		
-
-		<br/>
-		
-		{{ form.submit(class="btn btn-secondary btn-sm") }}
+		<form  method="POST" enctype="multipart/form-data">
+			{{ form.hidden_tag() }}
+			
+			<br/>
+	
+			{{ form.old_password.label(class="form-label") }}
+	
+			{{ form.old_password(class="form-control") }}
+			
+	
+			<br/>
+			{{ form.confirm_password.label(class="form-label") }}
+	
+			{{ form.confirm_password(class="form-control") }}
+			<br/>
+	
+			{{ form.new_password.label(class="form-label") }}
+	
+			{{ form.new_password(class="form-control") }}
+			
+			<br/>
+			
+			
+			{{ form.submit(class="btn btn-secondary btn-sm") }}
 			
 
 		
@@ -163,8 +121,15 @@
 	</form>
 
 
-</div>
 
 </div>
+
+<br/>
+
+	
+
+
+</div>
+
 
 {% endblock %}

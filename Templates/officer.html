@@ -1,88 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-        <div class="table-wrapper">
-				<div class="card-header m-3 p-3 rounded-pill border border-5 m-1 p-1 bg-warning">
-					<h2>OFFICER FROM <b>{{current_user.station_id|upper }}</b></h2>
-				</div>
-                <div class="row">
-                    
-                </div>
-            </div>
-            <table class="table table-bordered m-3 p-3 rounded border border-5 ">
-                <thead>
-					<tr class="table bg-warning">
-			<th>BATCH NO</th>
-			<th>FIRST NAME</th>
-			<th>LAST NAME</th>
-			<th>GENDER</th>
-			<th>STATION</th>
-			<th>DATE OF BIRTH</th>
-			<th>RANK</th>
-			<th>ACTIONS</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for data in officer.items %}
-		<tbody>
-	<td>{{data["batchno"]|upper}}</td>
- <td>{{data["first_name"]|upper}} </td>
- <td>{{data["last_name"]|upper}}</td>
- <td>{{data["gender"]|upper}}</td>
- <td>{{data["station_id"]|upper}}</td>
- <td>{{data["dob"]|upper}}</td>
- <td>{{data["rank"]|upper}}</td>
- 			
-			  
-			<td>
-				<a href="{{ url_for('dashboard', caught_by=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> VIEW</a> |
-				<a href="{{ url_for('update', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> 
-		</td>
-	</tr>
-	{% endfor %}		
-</tbody>
-</table>
+{% import "_macros.html" as macros %}
+
+<div class="card-header m-3 p-3 rounded-pill border border-5 m-1 p-1 bg-warning">
+<h2>OFFICER FROM <b>{{current_user.station_id|upper }}</b></h2>
+</div>
+ {{ macros.data_widget(officer.items) }}
 <!-- Pagination Links-->
-<div class="text-right">
-    <a href="{{ url_for('officer', page=officer.prev_num) }}"
-       class="btn btn-outline-dark 
-       {% if officer.page == 1 %}disabled{% endif %}">
-        &laquo;
-    </a>
-<!-- Loop through the number of pages to display a link for each-->
-    {% for page_num in officer.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-{% if page_num %}
-<!-- Check for the active page and set the link to "Active"-->
-            {% if officer.page == page_num %}
-            <a href="{{ url_for('officer', page=page_num) }}"
-               class="btn btn-dark">
-                {{ page_num }}
-            </a>
-            {% else %}
-            <a href="{{ url_for('officer', page=page_num) }}"
-               class="btn btn-outline-dark">
-                {{ page_num }}
-            </a>
-            {% endif %}
-        {% else %}
-            ...
-        {% endif %}
-    {% endfor %}
-    <a href="{{ url_for('officer', page=officer.next_num) }}"
-       class="btn btn-outline-dark 
-       {% if officer.page == officer.pages %}disabled{% endif %}">
-        &raquo;
-    </a>
-</div>
-<p class="text-right mt-3">
-   Showing page {{ officer.page }} of {{ officer.pages }}
-</p>
-</div>
-</div>     
-</body>
-</html>
+{{ macros.pagination_widget(officer, '.officer') }}
+
 {% endblock %}

@@ -5,7 +5,7 @@ import base64
 import folium
 from flask_admin.contrib.sqla import ModelView
 import datetime
-from webforms import PoliceForm, CrimeForm, activeForm, MessageForm,LoginForm,PasswordUpdateForm
+from webforms import PoliceForm, CrimeForm, activeForm, MessageForm,LoginForm,PasswordUpdateForm,PoliceUpdateForm,LocationForm
 # from flask_security import LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash 
 from flask import Flask, request, redirect,url_for,request,flash, request, redirect, abort
@@ -34,7 +34,7 @@ from flask_admin.contrib.fileadmin import FileAdmin
 
 path = op.join(op.dirname(__file__), 'static')
 
-
+ROWS_PER_PAGE = 5
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///our_users.db'
@@ -46,6 +46,11 @@ path = op.join(op.dirname(__file__), 'static')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+#PASS TIME TO BASE
+@app.context_processor
+def base():
+	return {'current_date': datetime.today().strftime('%Y-%m-%d %H:%M')}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -73,12 +78,14 @@ def b64encode_filter(s):
 
 @app.route('/ddd', methods=['GET', 'POST'])
 @app.route('/allofficer')
+@login_required
 def allofficer():
-    #profiles1 = Police.query.all()
-    return render_template('officer.html', police= User.query.all())
+    page = request.args.get('page', 1, type=int)
+    return render_template('allofficer.html', officer= User.query.paginate(page=page, per_page=ROWS_PER_PAGE))
 
 
 @app.route('/send_message', methods=['GET', 'POST'])
+@login_required
 def send_message():
     # get the list of users from the database
     users = User.query.all()
@@ -98,6 +105,7 @@ def send_message():
     return render_template('send_message.html', form=form)
 
 @app.route('/messages')
+@login_required
 def messages():
     user_id = current_user.id  # hardcoded for simplicity, you can use a session variable to store the current user's id
     user = User.query.get(user_id)
@@ -106,28 +114,11 @@ def messages():
     return render_template('messages.html', received_messages=received_messages, sent_messages=sent_messages)	
 
 @app.route('/officer')
-def officer():
-   # Police.query.filter_by(rank = 'cpp').all() #= Police.query.all()
-   #police = current_user.rank
-  # return render_template('officer.html', police= Police.query.all())
-   return render_template('officer.html', police = User.query.filter_by(station = current_user.station).all())#=profiles1)
-
-
-@app.route('/admin1')
 @login_required
-def admin():
-	id = current_user.id
-	if id == 1:
-		return render_template("Admin/admin.html")
-	else:
-		flash("Sorry you must be the Admin to access the Admin Page...")
-		return render_template('Admin/admin.html')   
-    # return render_template('Admin/admin.html')   
-
-
-@app.route('/home')
-def home():
-    return render_template('home.html')
+def officer():
+    page = request.args.get('page', 1, type=int)
+    return render_template('officer.html', officer=User.query.filter_by(station=current_user.station).paginate(page=page, per_page=ROWS_PER_PAGE))
+  
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -150,40 +141,46 @@ def index():
 
 
 @app.route('/view_all')
-#@login_required
-def view_all():
-   # profiles = Crimerecords.query.all()
-    return render_template('view_all.html', crime= Crimerecords.query.all())
-
-@app.route('/map1')
-#@login_required
-def map1():
-   # profiles = Crimerecords.query.all()
-    return render_template('mapcopy.html', map= Location.query.all())
-
-
-@app.route('/station')
-#@login_required
-def station():
-   # profiles = Crimerecords.query.all()
-    return render_template('station.html', station= Location.query.all())
-
-
-@app.route('/details_station/<int:id>', methods=['GET', 'POST'])
 @login_required
-def details_station(id):
-	name = Location.query.get_or_404(id)
+def view_all():
+    page = request.args.get('page', 1, type=int)
+    return render_template('view_all.html', crime= Crimerecords.query.paginate(page=page, per_page=ROWS_PER_PAGE))
+
+
+@app.route('/station', methods=['GET', 'POST'])
+@login_required
+def station():
+    form = LocationForm()
+    if request.method == 'POST' and form.validate():
+        image = request.files['image']
+        about = form.about.data
+        latitude = form.latitude.data
+        longitude = form.longitude.data
+        station_name=form.station_name.data
+        new_image = Location(name=image.filename,about=about,latitude=latitude,longitude=longitude,station_name=station_name, data=image.read())
+        db.session.add(new_image)
+        db.session.commit()
+        return redirect('/station')
+   # profiles = Crimerecords.query.all()
+    return render_template('station.html',form=form,station= Location.query.order_by(Location.date_added))
+
+
+@app.route('/details_station/<int:station>', methods=['GET', 'POST'])
+@login_required
+def details_station(station):
+	name = Location.query.get_or_404(station)
+	officer = User.query.filter_by(station=station).all()
 	return render_template('station_details.html',
 				name = name,
-				id = id)
+				officer = officer)
 
 
 
 @app.route('/view')
-#@login_required
+@login_required
 def view():
-   # profiles = Crimerecords.query.all()
-    return render_template('view.html', crime= Crimerecords.query.filter_by(station = current_user.station).all())
+    page = request.args.get('page', 1, type=int)
+    return render_template('view.html', pagination= Crimerecords.query.filter_by(station = current_user.station).paginate(page=page, per_page=ROWS_PER_PAGE))
 
 
 @app.route('/admindashboard/<int:id>',methods=['GET', 'POST'])
@@ -203,16 +200,12 @@ def admindashboard(id):
 				form=form, data = data)
   
 
-@app.route('/test')
-#@login_required
-def test():
-    return render_template('test_pw.html')
 
 @app.route('/wanted')
 @login_required
 def wanted():
-   # profiles = Crimerecords.query.all()
-    return render_template('wanted.html', crime= Crimerecords.query.filter_by(wanted='YES').all())
+    page = request.args.get('page', 1, type=int)
+    return render_template('wanted.html', crime= Crimerecords.query.filter_by(wanted='YES').paginate(page=page, per_page=ROWS_PER_PAGE))
 
 @app.route('/addprofile', methods=["GET", "POST"])
 @login_required
@@ -223,17 +216,6 @@ def addprofile():
            last_name=request.form['last_name']
            username=request.form['username']
            age=request.form['age']
-        #    #check profile
-        #    if request.files['profile_pic']:
-        #       profile_pic = request.files[' profile_pic']
-        #       #grab image name
-        #       pic_filename = secure_filename(profile_pic.filename)
-        #       #set uuid
-        #       pic_name = str(uuid.uuid1()) + "_" + pic_filename
-        #       #save that image
-        #       saver = request.files['profile_pic']
-        #       #change it to a string to save to db
-        #       profile_pic = pic_name
            if first_name != '' and last_name !='' and username !='' and age is not None:
             p = User(first_name=first_name, last_name=last_name, username=username,age=age)
             db.session.add(p)
@@ -252,6 +234,7 @@ def addprofile():
 
 
 @app.route('/addcrime', methods=['GET', 'POST'])
+@login_required
 def addcrime():
 	name = None
 	form = CrimeForm()
@@ -260,20 +243,20 @@ def addcrime():
 		if user is None:
 			#upload 
 			profile_pic = request.files['profile_pic']
-			profile_pic2 = request.files['profile_pic2']
+			file = request.files['media']
+			media_name = file.filename
+			media_type = file.content_type.split('/')[0]  # Extract media type from content type
+			media_data = file.read()
 			fingerprint = request.files['fingerprint']
 
 			# Grab Image Name
 			pic_filename1 = secure_filename(profile_pic.filename)
-			pic_filename2= secure_filename(profile_pic2.filename)
 			pic_filename3 = secure_filename(fingerprint.filename)
 			# Set UUID
 			pic_name = str(uuid.uuid1()) + "_" + pic_filename1
-			pic_name2 = str(uuid.uuid1()) + "_" + pic_filename2
 			fingerprint = str(uuid.uuid1()) + "_" + pic_filename3
 			# Save That Image
 			saver = request.files['profile_pic']
-			saver2 = request.files['profile_pic2']
 			saver1 = request.files['fingerprint']
 			# Change it to a string to save to db
 			profile_pic = pic_name
@@ -293,7 +276,9 @@ def addcrime():
 			 gender=form.gender.data,
 			 dob=form.dob.data,
 			 profile_pic= pic_name,
-			 profile_pic2= pic_name2,
+			 evidence= media_name,
+			 media_type=media_type,
+			 media_data=media_data,
 			 fingerprint= fingerprint,
 			 caught_by= current_user.id,
 			 station=current_user.station)
@@ -301,7 +286,6 @@ def addcrime():
 			db.session.commit()
 			saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
 			saver1.save(os.path.join(app.config['UPLOAD_FINGER'], fingerprint))
-			saver2.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name2))
 			#file2.save(os.path.join(app.config['UPLOAD_FOLDER'],file2.filename))
 			
 			
@@ -321,7 +305,7 @@ def addcrime():
 		form.dob.data = ''
 		# form.profile_pic2.data = ''
 		# form.fingerprint.data = ''
-		flash("RECORD SUCCEFULLY ADDED!!!")
+		flash(f"RECORD SUCCEFULLY ADDED!!!",category='success')
 		return redirect(url_for('view'))
 	our_users = Crimerecords.query.order_by(Crimerecords.date_added)
 	return render_template("addcrime.html",
@@ -349,140 +333,73 @@ def calculate(born):
 	today = datetime.now()
 	return today.year - born.year - ((today.month, today.day)<(born.month, born.day))
 #Create Dashboard Page
-@app.route('/dashboard/<int:id>', methods=['GET', 'POST'])
-#@login_required
-def dashboard(id):
+@app.route('/dashboard/<int:caught_by>')
+@login_required
+def dashboard(caught_by):
 	form = PoliceForm()
-	id = current_user.id
-	name_to_update = User.query.get_or_404(id)
+	# id = current_user.id
+	name_to_update = User.query.get_or_404(caught_by)
+	crime = Crimerecords.query.filter_by(caught_by=caught_by).all()
 	birth_date = name_to_update.dob
 	today = datetime.utcnow()
 	age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
-	if request.method == "POST":
-		name_to_update.first_name = request.form['first_name']
-		name_to_update.last_name = request.form['last_name']
-		name_to_update.batchno = request.form['batchno']
-		# age = (datetime.today() - dob).days/365
-		# age = round(age, 1)
-		# name_to_update.username = request.form['username']
-		# name_to_update.about_author = request.form['about_author']
-		# Check for profile pic
-		if request.files['profile_pic']:
-			name_to_update.profile_pic = request.files['profile_pic']
-
-			# Grab Image Name
-			pic_filename = secure_filename(name_to_update.profile_pic.filename)
-			# Set UUID
-			pic_name = str(uuid.uuid1()) + "_" + pic_filename
-			# Save That Image
-			saver = request.files['profile_pic']
-			
-
-			# Change it to a string to save to db
-			
-			name_to_update.profile_pic = pic_name
-			try:
-				db.session.commit()
-				saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
-				flash("User Updated Successfully!")
-				return render_template("dashboard.html", 
-					form=form,
-					name_to_update = name_to_update,
-				id = id,age=age)
-			except:
-				flash("Error!  Looks like there was a problem...try again!")
-				return render_template("dashboard.html", 
-					form=form,
-					name_to_update = name_to_update,age=age)
-		else:
-			db.session.commit()
-			flash("User Updated Successfully!")
-			return render_template("dashboard.html", 
-				form=form, 
-				name_to_update = name_to_update,
-				id = id,age=age)
-	else:
-		return render_template("dashboard.html", 
+	return render_template("dashboard.html", 
 				form=form,
 				name_to_update = name_to_update,
-				id = id ,age=age)
+				crime = crime ,age=age)
 	return render_template('dashboard.html')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	name = None
-	form = PoliceForm(active=True)
-	if form.validate_on_submit() and request.method == "POST":
-		user = User.query.filter_by(batchno=form.batchno.data).first()
-		if user is None:
-			# Hash the password!!!
-			file = request.files['media']
-
-			# Grab Image Name
-			media_name = file.filename
-			# Set UUID
-			media_type = file.content_type.split('/')[0]  # Extract media type from content type
-			# Save That Image
-			media_data = file.read()
-			# Change it to a string to save to db
-			hashed_pw = generate_password_hash(form.password_hash.data, "sha256")
-			user = User(batchno=form.batchno.data, 
-               first_name=form.first_name.data, 
-               last_name=form.last_name.data, 
-               rank=form.rank.data,
-               Personal_email=form.personal_email.data,
-               Phone_No=form.phone_no.data,
-               gender=form.gender.data,
-               station=current_user.station,
-               dob=form.dob.data,
-               Supervisor_id=current_user.batchno, 
-               password_hash=hashed_pw,
-               profile_pic=media_name,
-               media_type=media_type, 
-               media_data=media_data,
-                active=True)
-			db.session.add(user)
-			db.session.commit()
-			
-			
-		form.personal_email= ''
-		form.batchno.data = ''
-		form.first_name.data = ''
-		form.profile_pic.data = ''
-		form.last_name.data = ''
-		form.gender.data = ''
-		form.dob.data = ''
-		form.rank.data = ''
-		form.password_hash.data = ''
-		flash("added")
-		return redirect(url_for('register'))
-	our_users = User.query.order_by(User.date_added)
-	return render_template("register.html",
-		form=form,
-		name=name,
-		our_users=our_users)
-
-
+    form = PoliceForm()
+    if form.validate_on_submit() and request.method == "POST":
+        file = request.files['media']
+        media_name = file.filename
+        media_type = file.content_type.split('/')[0]  # Extract media type from content type
+        media_data = file.read()
+        user_to_create = User(batchno=form.batchno.data,
+                              first_name=form.first_name.data,
+                              last_name=form.last_name.data,
+                              rank=form.rank.data,
+                              Personal_email=form.personal_email.data,
+                              Phone_No=form.phone_no.data,
+                              gender=form.gender.data,
+                              station=current_user.station,
+                              Supervisor_id=current_user.batchno,
+                              dob=form.dob.data,
+                              profile_pic=media_name,
+                              media_type=media_type,
+                              media_data=media_data,
+                              active=True,
+                              set_password=form.password_hash.data)
+        db.session.add(user_to_create)
+        db.session.commit()
+        flash(f"Account created successfully!", category='success')
+        return redirect(url_for('register'))
+    if form.errors != {}:   #If there are not errors from the validations
+        for err_msg in form.errors.values():
+            flash(f'There was an error with creating a user: {err_msg}', category='danger')      
+    return render_template('register.html', form=form)
+from passlib.hash import pbkdf2_sha256
 # Update Database Record
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
-	form = PoliceForm(active=True)
+	form = PoliceUpdateForm(active=True)
 	name_to_update = User.query.get_or_404(id)
 	if request.method == "POST":
 		name_to_update.rank = request.form['rank']
-		# name_to_update.active = request.form['active']
 		name_to_update.station = request.form['station']
+		name_to_update.set_password= request.form['password_hash']
 		try:
 			db.session.commit()
-			flash("User Updated Successfully!")
+			flash(f"User Updated Successfully!", category= 'success')
 			return render_template("update.html", 
 				form=form,
 				name_to_update = name_to_update, id=id)
 		except:
-			flash("Error!  Looks like there was a problem...try again!")
+			flash(f"Error!  Looks like there was a problem...try again!", category='error')
 			return render_template("update.html", 
 				form=form,
 				name_to_update = name_to_update,
@@ -522,6 +439,7 @@ def edit_crime(id):
 
 
 @app.route('/search', methods=['POST'])
+@login_required
 def search():
     search_term = request.form['search_term']
     filter_option = request.form['filter_option']
@@ -532,14 +450,6 @@ def search():
     elif filter_option=='c_first_name':
           results=Crimerecords.query.filter(Crimerecords.first_name.like(f'%{search_term}%')).all()
     return render_template('results.html',results=results)
-
-@app.route('/upload', methods=['POST'])
-def upload():
-    fingerprint = request.files['file'].read()
-    fingerprint = Crimerecords(name=fingerprint)
-    db.session.add(fingerprint)
-    db.session.commit()
-    return jsonify({'message': 'Fingerprint uploaded successfully!'})
 
 
 class DefaultModelView(flask_admin_sqla.ModelView):
@@ -612,9 +522,7 @@ class CrimerecordsView(ModelView):
 	column_searchable_list = ['first_name', 'last_name']
 	can_export = True
 	can_view_details = True
-	form_extra_fields = {
-        'profile_pic': ImageUploadField('profile_pic', base_path='static/images/')
-    }
+	
 
 class MessageView(ModelView):
 	can_export = True
@@ -623,6 +531,8 @@ class MessageView(ModelView):
 class LocationView(ModelView):
 	can_export = True
 	can_view_details = True
+	column_exclude_list = ['data', ]
+        
 
 admin.add_view(DefaultModelView(User, db.session))
 admin.add_link(MenuLink(name='Logout', category='', url='/logout'))
@@ -632,33 +542,11 @@ admin.add_view(LocationView(Location, db.session))
 admin.add_view(MessageView(Message, db.session))
 admin.add_view(CrimerecordsView(Crimerecords, db.session))
 admin.add_view(ModelView(Role, db.session))
-# class MyModelView(sqla.ModelView):
 
-#     def is_accessible(self):
-#         if not current_user.is_active or not current_user.is_authenticated:
-#             return False
-
-#         # if current_user.has_role('superuser'):
-#         #     return True
-
-#         return False
-
-#     def _handle_view(self, name, **kwargs):
-#         """
-#         Override builtin _handle_view in order to redirect users when a view is not accessible.
-#         """
-#         if not self.is_accessible():
-#             if current_user.is_authenticated:
-#                 # permission denied
-#                 abort(403)
-#             else:
-#                 # login
-#                 return redirect(url_for('security.login', next=request.url))
-
-# Create Login Page
 
 
 @app.route('/match', methods=['GET', 'POST'])
+@login_required
 def match():
     if request.method == 'POST':
         # get the uploaded file
@@ -748,6 +636,7 @@ def match():
 
     
 @app.route('/face_match', methods=['GET', 'POST'])
+@login_required
 def face_match():
     if request.method =='POST':
      file = request.files['file']
@@ -797,10 +686,15 @@ def face_match():
          best_match_image = image_file
 
 # Print the best match image file name
+    if image_file:
+        best_match_image1 = Crimerecords.query.filter_by(profile_pic=image_file).first()
+    else:
+        best_match_image1 = None
     print("Best match: " + best_match_image)
-    return render_template ("match_faces.html",best_match =best_match_image, best_score =best_match_distance)
+    return render_template ("match_faces.html",best_match_image1=best_match_image1,best_match =best_match_image, best_score =best_match_distance)
 
 @app.route('/map')
+@login_required
 def map():
     # get all locations from the database
     locations = Location.query.all()
@@ -810,7 +704,7 @@ def map():
 
     # add a marker for each location to the map
     for location in locations:
-        folium.Marker(location=[location.latitude, location.longitude], popup=location.name).add_to(map)
+        folium.Marker(location=[location.latitude, location.longitude],icon=folium.Icon(icon="cloud") ,popup=location.name).add_to(map)
 
     # render the map using an HTML template
     return render_template('map.html', map=map._repr_html_())
@@ -826,14 +720,14 @@ def login():
 			# Check the hash
 			if check_password_hash(user.password_hash, form.password.data)and user.active == True:
 				login_user(user)
-				flash("Login Succesfull!!")
+				flash(f"Login Succesfull!!", category='success')
 				return redirect(url_for('index'))
 			elif user.active == False:
-				flash("Account Disabled - Ask Admin for permission!")
+				flash(f"Account Disabled - Ask Admin for permission!", category='denger')
 			else:
-				flash("password incorrect")	
+				flash(f"password incorrect", category='warning')	
 		else:
-			flash("That User Doesn't Exist! Try Again...")
+			flash(f"That User Doesn't Exist! Try Again...", category='warning')
 	return render_template('login.html', form=form)
 
 
@@ -842,7 +736,7 @@ def login():
 @login_required
 def logout():
 	logout_user()
-	flash("You Have Been Logged Out!  Thanks For Stopping By...")
+	flash(f"You Have Been Logged Out!  Thanks For Stopping By...",category='success')
 	return redirect(url_for('login'))    
 
 
@@ -873,23 +767,13 @@ def catch_all(path):
     
     return render_template('404.html')
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template("404.html")
 
-@app.route('/adminofficer/<int:id>')
-def adminofficer(id):
-    
-    flash("deleted succesfully")
-    return render_template("Admin/adminofficer.html")
-
-@property
-def password(self):
-		raise AttributeError('password is not a readable attribute!')
-
-@password.setter
-def password(self, password):
-		self.password_hash = generate_password_hash(password)
-
-def verify_password(self, password):
-	return check_password_hash(self.password_hash, password)
+@app.errorhandler(400)
+def page_not_found(e):
+	return render_template("404.html")
 
 if __name__ == '__main__':
     app.debug = True

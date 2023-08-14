@@ -1,87 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-	<!-- <a href="/add_data">ADD</a> -->
-	{% for message in get_flashed_messages() %}
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-{% endfor %}
-</head>
-<body>
-    <div class="container-fluid" add style="overflow-y:scroll" >
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8"><h2>SAVE <b>RECORDS</b></h2></div>
-                    
-                </div>
-            </div>
-            <table class="table table-bordered">
-                <thead>
-					<tr>
-			<th>batchno</th>
-			<th>first_name</th>
-			<th>last_name</th>
-			<th>gender</th>
-			<th>station</th>
-			<th>dob</th>
-			<th>rank</th>
-			<!-- <th>password_hash</th> -->
-		</tr>
-	</thead>
-	<tbody>
-		{% for data in police %}
-		<tbody>
-	<td>{{data["batchno"]}}</td>
- <td>{{data["first_name"]}}</td>
- <td>{{data["last_name"]}}</td>
- <td>{{data["gender"]}}</td>
- <td>{{data["station"]}}</td>
- <td>{{data["dob"]}}</td>
- <td>{{data["rank"]}}</td>
- <!-- <td>{{data["password_hash"]}}</td> -->
-			
-			  <!-- <td class align ="center"></td>  -->
-			
-			<td>
-				<a href="{{ url_for('dashboard', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> VIEW</a> |
-				<a href="{{ url_for('update', id=data['id']) }}" class="text-primary"><i class="fa fa-fw fa-edit"></i> Edit</a> |
-				 <!-- <a href="{{ url_for('dashboard', id=data['id']) }}" class="text-danger"><i class="fa fa-fw fa-trash"></i> UPDATE</a> -->
-                <a href="{{ url_for('delete', id=data['id']) }}" class="text-danger"><i class="fa fa-fw fa-trash"></i> Delete</a>
-		</td>
-	</tr>
-	{% endfor %}		
-</tbody>
-</table>
-</div>
-</div>     
-</body>
-</html>
+{% import "_macros.html" as macros %}
+
+    <div class="card-header m-3 p-3 rounded-pill border border-5 m-1 p-1 bg-warning">
+        <h2>OFFICER FROM ALL STATION<b></b></h2>
+    </div>
+{{ macros.data_widget(officer.items) }}
+<!-- Pagination Links-->
+{{ macros.pagination_widget(officer, '.allofficer') }}
+
 {% endblock %}
-</tbody>
-</table>
-</div>
-</div>     
-
-<!-- Bootstrap core JavaScript-->
-<script src="../static/vendor/jquery/jquery.min.js"></script>
-<script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="../static/js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="../static/vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="../static/js/demo/chart-area-demo.js"></script>
-<script src="../static/js/demo/chart-pie-demo.js"></script>
-</body>
-</html>
