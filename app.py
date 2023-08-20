@@ -1,11 +1,11 @@
 from email import policy
-from models import Message,app,db,Role,User,Crimerecords,Location
+from models import Message,app,db,User,Crimerecords,Location
 from markupsafe import Markup
 import base64
 import folium
 from flask_admin.contrib.sqla import ModelView
 import datetime
-from webforms import PoliceForm, CrimeForm, activeForm, MessageForm,LoginForm,PasswordUpdateForm,PoliceUpdateForm,LocationForm
+from webforms import PoliceForm, CrimeForm, MessageForm,LoginForm,PasswordUpdateForm,PoliceUpdateForm,LocationForm
 # from flask_security import LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash 
 from flask import Flask, request, redirect,url_for,request,flash, request, redirect, abort
@@ -89,7 +89,10 @@ def allofficer():
 def send_message():
     # get the list of users from the database
     users = User.query.all()
-
+    user_id = current_user.id
+    user = User.query.get(user_id)
+    received_messages = user.messages_received
+    sent_messages = user.messages_sent
     # create the form and populate the recipient field with the list of users
     form = MessageForm(request.form)
     form.recipient_id.choices = [(str(user.id), user.batchno) for user in users]
@@ -101,17 +104,10 @@ def send_message():
         message.set_text(text)
         db.session.add(message)
         db.session.commit()
-        return redirect('/messages')
-    return render_template('send_message.html', form=form)
+        return redirect('/send_message')
+    return render_template('send_message.html', form=form, received_messages=received_messages, sent_messages=sent_messages)
 
-@app.route('/messages')
-@login_required
-def messages():
-    user_id = current_user.id  # hardcoded for simplicity, you can use a session variable to store the current user's id
-    user = User.query.get(user_id)
-    received_messages = user.messages_received
-    sent_messages = user.messages_sent
-    return render_template('messages.html', received_messages=received_messages, sent_messages=sent_messages)	
+	
 
 @app.route('/officer')
 @login_required
@@ -128,7 +124,7 @@ def index():
     user = User.query.get_or_404(id)
     if form.validate_on_submit():
         if current_user.check_password(form.old_password.data):
-            current_user.set_password(form.new_password.data)
+            current_user.set_password=form.new_password.data
             db.session.commit()
             flash('Password updated successfully!', 'success')
             return redirect(url_for('index'))
@@ -183,21 +179,7 @@ def view():
     return render_template('view.html', pagination= Crimerecords.query.filter_by(station = current_user.station).paginate(page=page, per_page=ROWS_PER_PAGE))
 
 
-@app.route('/admindashboard/<int:id>',methods=['GET', 'POST'])
-@login_required
-def admindashboard(id):
-    # form = activeForm(request.form, obj=data)
-    data = User.query.get_or_404(id)
-    form = activeForm(request.form, obj=User)
-    if form.validate_on_submit():
-     #if request.method == "POST":
-       data.active = form.active.data
-    #    db.session.add(data)
-       db.session.commit()
-       flash('ACCOUNT UPDATED!!!')
-    #    return redirect(url_for("admindashboard/<int:id>")) 
-    return render_template('view.html', police= User.query.all(), 
-				form=form, data = data)
+
   
 
 
@@ -281,7 +263,7 @@ def addcrime():
 			 media_data=media_data,
 			 fingerprint= fingerprint,
 			 caught_by= current_user.id,
-			 station=current_user.station)
+			 station=current_user.station_id)
 			db.session.add(user)
 			db.session.commit()
 			saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
@@ -340,9 +322,8 @@ def dashboard(caught_by):
 	# id = current_user.id
 	name_to_update = User.query.get_or_404(caught_by)
 	crime = Crimerecords.query.filter_by(caught_by=caught_by).all()
-	birth_date = name_to_update.dob
-	today = datetime.utcnow()
-	age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+	m = name_to_update.dob
+	age = calculate(m)
 
 	return render_template("dashboard.html", 
 				form=form,
@@ -386,11 +367,12 @@ from passlib.hash import pbkdf2_sha256
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
-	form = PoliceUpdateForm(active=True)
+	form = PoliceUpdateForm(request.form, obj=User)
 	name_to_update = User.query.get_or_404(id)
-	if request.method == "POST":
+	if form.validate_on_submit() and request.method == "POST":
 		name_to_update.rank = request.form['rank']
 		name_to_update.station = request.form['station']
+		name_to_update.active= form.active.data
 		name_to_update.set_password= request.form['password_hash']
 		try:
 			db.session.commit()
@@ -483,7 +465,7 @@ class MyAdminIndexView(AdminIndexView):
         if current_user.id == 2 or current_user.id == 1:
             return super(MyAdminIndexView,self).index()
         else:
-            flash('YOU ARE NOT AUTHORIZE TO ACCESS THIS PAGE!!!')
+            flash(f'YOU ARE NOT AUTHORIZE TO ACCESS THIS PAGE!!!',category="warning")
             return redirect(url_for("index"))
         
   
@@ -514,7 +496,6 @@ class DefaultModelView(ModelView):
 	edit_modal = True
 	column_editable_list = ['first_name', 'last_name','active','batchno']  
 	column_details_exclude_list = ['media_data','password_hash', 'profile_pic']
-from flask_admin.form.upload import ImageUploadField
 	
 class CrimerecordsView(ModelView):
 	# column_exclude_list = ['Profile_Pic', ]
@@ -541,7 +522,6 @@ admin.add_view(LocationView(Location, db.session))
 # admin.add_view(NotificationsView(name='Notifications', endpoint='notify'))
 admin.add_view(MessageView(Message, db.session))
 admin.add_view(CrimerecordsView(Crimerecords, db.session))
-admin.add_view(ModelView(Role, db.session))
 
 
 

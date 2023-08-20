@@ -973,9 +973,9 @@ user7= User(batchno='admin7', first_name='admin',
    station=2, profile_pic='admin', dob=datetime(2023,12,31),
   active=1, gender='MALE', password_hash=hashed_pw, Personal_email='7fregenevwegba@gmail.com',Phone_No='013777979',Supervisor_id='admn')
 # add some test data
-location1 = Location(name='Lagos', latitude=51.5074, longitude=-0.1278)
-location2 = Location(name='abuja', latitude=40.7128, longitude=-74.0060)
-location3 = Location(name='jos', latitude=35.6895, longitude=139.6917)
+location1 = Location(name='Lagos',station_name="london1",data=1221212,about="money", latitude=51.5074, longitude=-0.1278)
+location2 = Location(name='abuja',station_name="london2",data=1221212,about="money", latitude=40.7128, longitude=-74.0060)
+location3 = Location(name='jos',station_name="london3",data=1221212,about="money", latitude=35.6895, longitude=139.6917)
 db.session.add_all([ user1 ,user2,user3,user4,user5,user6,user7,location1,location2,location3])
 db.session.commit()
 

@@ -11,7 +11,7 @@
             <div class="table-title">
                 <div class="row">
 					<div class="card-header m-3 p-3 rounded-pill border border-5 m-1 p-1 bg-primary">
-                    <div class="col-sm-8"><h2>POLICE STATION</h2></div>
+                    <div class="col-sm-8"><h2>POLICE STATION </h2></div>
                     
                 </div>
             </div>
@@ -25,7 +25,8 @@
 		</tr>
 	</thead>
 	<tbody >
-		{% for data in station %}
+		{% for data in station%}
+		{{ data|count}}
 		<tbody>
 			<td>{{data["id"]}}</td>
 			<td>{{data["station_name"]}}</td>

@@ -1,32 +1,150 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!DOCTYPE html>
+<html style="color: rgb(126,118,48);background-color: #13247a;">
 
-<div class="card">
-  <div class="card-header">
-    <p class="h2">SEND MESSAGE</p>
-    
-  </div>
-  <div class="card-body">
-<form method="post" action="/send_message">
-  {{ form.csrf_token }}
-  <br/>
-  {{ form.recipient_id.label (class="form-label")}} {{ form.recipient_id (class="form-select form-select-sm")}}
-  {% for error in form.recipient_id.errors %}
-    <span style="color: red;">[{{ error }}]
-  {% endfor %}
-  <br/>
-  <br>
-  {{ form.text.label }} {{ form.text  (class="form-control")}}
-  {% for error in form.text.errors %}
-    <span style="color: red;">[{{ error }}]</span>
-  {% endfor %}
-  <br>
-  <input class="btn btn-primary" type="submit" value="Send message">
-</form>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+</head>
 
-</div>
+<body style="background-color: rgb(36,74,210);">
+    <div class="card-group" style="margin: 18px;height: 636px;">
+        <div class="card">
+            <div class="card-body" data-bs-hover-animate="bounce" style="width: 317px;">
 
-</div>
+              <article class="my-3" id="accordion">
+                <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+                  <h3>received_messages</h3>
+                  
+                  <h3>{{received_messages|length}} message received</h3>
 
+                </div>
+                {% for message in received_messages %}
+                {% if message.sender.media_type == 'image' %}
+                <div>
+                  <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+                  <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h4 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target='#{{ message.text }}' aria-expanded="false" aria-controls="collapseOne">
+                          {{ message.sender.batchno|upper }}<img class="rounded-circle" src="data:{{ message.sender.media_type }}/{{ message.sender.profile_pic.split('.')[-1] }};base64,{{ message.sender.media_data|custom_b64encode }}" style="width: 38px;height: 46px;margin: 2px;padding: -3px;"
+                          loading="eager">
+                          {% else %}
+
+		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+		{% endif %}
+
+                        </button>
+                      </h4>
+                      <div id='{{ message.text }}' class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                        <div class="accordion-body">
+                          <strong>{{ message.text|length }}</strong>{{ message.text }}
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="accordion" id="accordionExample">
+                      <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Accordion Item #1
+                          </button>
+                        </h4>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                          <div class="accordion-body">
+                            <strong>This is the first item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                          </div>
+                        </div>
+                      </div>
+                    
+                  </div>
+                  </div></div>
+          
+                </div>
+              </article>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <article class="my-3" id="accordion">
+                <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+                  <h3>Sent Messages</h3>
+                  {{sent_messages|count}}
+                </div>
+                {% for message in sent_messages %}
+                {% if message.recipient.media_type == 'image' %}
+
+                <div>
+                  <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+                  <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h4 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ message.text }}" aria-expanded="false" aria-controls="collapseOne">
+                          {{ message.recipient.batchno|upper }}   {{ message.recipient.batchno|upper }} <img class="rounded-circle" src="data:{{ message.recipient.media_type }}/{{ message.recipient.profile_pic.split('.')[-1] }};base64,{{ message.recipient.media_data|custom_b64encode }}" style="width: 38px;height: 46px;margin: 2px;padding: -3px;"
+                          loading="eager">
+                        </button>
+                        {% else %}
+
+		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
+		{% endif %}
+                      </h4>
+                      <div id="{{ message.text }}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                        <div class="accordion-body">
+                          <strong>{{ message.text }}</strong> 
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                    <div class="accordion-item">
+                      <h4 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Accordion Item #2
+                        </button>
+                      </h4>
+                      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                        <div class="accordion-body">
+                          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        </div>
+                      </div>
+                    </div>
+                
+                  </div>
+                  </div></div>
+          
+                </div>
+              </article>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/send_message">
+                  {{ form.csrf_token }}
+  
+                  <h4 class="card-title">SEND MESSAGE</h4>
+                  {{ form.recipient_id.label (class="form-label")}} {{ form.recipient_id (class="border rounded border-info custom-select",readonly="" ,autofocus="", required="", style="padding: 6px 12px 4px 10px;margin: 10px -1px 20px;")}}
+                  {% for error in form.recipient_id.errors %}
+                    <span style="color: red;">[{{ error }}]
+                  {% endfor %}
+                  <hr> {{ form.text (class="border rounded d-flex flex-fill m-auto",style="padding: 10px 12px 1px 11px;width: 274px;",required="", autocomplete="on", autofocus="" ,spellcheck="true" ,wrap="soft", minlength="5" ,placeholder="enter message to send")}}
+                  {% for error in form.text.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                  {% endfor %}   
+                  
+                  <hr><input type="submit" value="Send message"class="btn btn-dark" type="submit" data-bs-hover-animate="bounce" value="Send message" type="button"></div>
+                </form>                
+              </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.min.js') }}"></script>
+</body>
+
+</html>
 {% endblock %}

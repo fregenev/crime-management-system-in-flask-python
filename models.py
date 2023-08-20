@@ -22,7 +22,7 @@ cipher_suite = Fernet(key)
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String)
+    text = db.Column(db.String(200))
     encrypted_text = db.Column(db.LargeBinary)  # store the encrypted message as binary data
     picture = db.Column(db.String(80), nullable=True)
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -38,13 +38,6 @@ class Message(db.Model):
         return cipher_suite.decrypt(self.encrypted_text).decode()
 
 
-class Role(db.Model, RoleMixin):
-    id = db.Column(db.Integer(), primary_key=True)
-    nasme = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(255))
-
-    def __str__(self):
-        return self.name
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,7 +47,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(20), unique=False, nullable=False)
     last_name = db.Column(db.String(20), unique=False, nullable=False)
     rank = db.Column(db.String(20), unique=False, nullable=False)
-    station = db.Column(db.String(120), db.ForeignKey('location.id'))
+    station = db.Column(db.Integer, db.ForeignKey('location.id'))
     profile_pic = db.Column(db.String(100))
     media_type = db.Column(db.String(10))
     media_data = db.Column(LargeBinary)
@@ -85,13 +78,12 @@ class User(db.Model, UserMixin):
         return '<User %r>' % (self.first_name)
 
 
-def __init__(self,id,batchno, first_name,last_name,rank,station,profile_pic, dob,password_hash,gender,active,sender):
+def __init__(self,id,batchno, first_name,last_name,rank,profile_pic, dob,password_hash,gender,active,sender):
     self.id = id
     self.batchno = batchno
     self.first_name = first_name
     self.last_name = last_name
     self.rank = rank
-    self.station = station
     self.profile_pic = profile_pic
     self.sender = Message.recipient_id 
     self.password_hash =password_hash
@@ -102,24 +94,24 @@ def __init__(self,id,batchno, first_name,last_name,rank,station,profile_pic, dob
 class Crimerecords(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	first_name = db.Column(db.String(20), nullable=False, unique=False)
-	last_name = db.Column(db.String(200), nullable=False)
-	mother_name = db.Column(db.String(120), nullable=False, unique=False)
+	last_name = db.Column(db.String(60), nullable=False)
+	mother_name = db.Column(db.String(40), nullable=False, unique=False)
 	motive = db.Column(db.String(64))
 	nationality = db.Column(db.String(32))
 	phone_No = db.Column(db.String(64))
 	case_id = db.Column(db.String(10))
 	medicals = db.Column(db.String(64))
-	address = db.Column(db.String(128))
+	address = db.Column(db.String(208))
 	crime_type = db.Column(db.String(120), nullable=False, unique=False)
 	wanted = db.Column(db.String(120), nullable=False, unique=False)
 	fingerprint = db.Column(db.String(120), nullable=False, unique=False)
-	station = db.Column(db.String(120), db.ForeignKey('location.id'))
-	caught_by = db.Column(db.String(120), db.ForeignKey('user.id'))
-	gender = db.Column(db.String(120), nullable=False, unique=False)
+	station = db.Column(db.Integer, db.ForeignKey('location.id'))
+	caught_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+	gender = db.Column(db.String(20), nullable=False, unique=False)
 	dob = db.Column(db.DateTime, nullable=False, unique=False)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
-	profile_pic = db.Column(db.String())
-	evidence = db.Column(db.String())
+	profile_pic = db.Column(db.String(300))
+	evidence = db.Column(db.String(300))
 	media_type = db.Column(db.String(10))
 	media_data = db.Column(LargeBinary)
         

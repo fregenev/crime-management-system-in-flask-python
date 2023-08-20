@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, EqualTo, Length
 from wtforms.widgets import TextArea
 from flask_wtf.file import FileField
 from wtforms import validators
-from models import Message,Role,User,Crimerecords,Location
+from models import Message,User,Crimerecords,Location
 from wtforms.validators import DataRequired, EqualTo,Email, Length
 from flask_wtf.file import FileField
 from wtforms import StringField, SubmitField,RadioField,IntegerField, DateField ,PasswordField, BooleanField, ValidationError, TextAreaField, SelectField, HiddenField
@@ -112,9 +112,6 @@ class PasswordForm(FlaskForm):
 	password_hash = PasswordField("What's Your Password", validators=[DataRequired()])
 	submit = SubmitField("Submit")
 
-class activeForm(FlaskForm):
-	active = BooleanField("DISABLE ACCOUNT")
-	submit = SubmitField("Submit")	
 
 class SearchForm(FlaskForm):
     search_term = StringField('Enter your search term:')
@@ -126,6 +123,7 @@ class SearchForm(FlaskForm):
     
 class PoliceUpdateForm(FlaskForm):
 	station = SelectField("station", choices=[('del', 'deltasate'), ('ab', 'abj'), ('lag','lagos')])
+	active = BooleanField("DISABLE ACCOUNT")
 	rank = SelectField("Rank", choices = [('Inspector General of Police','Inspector General of Police'),
 				       ('Additional Inspector General of Police', 'Additional Inspector General of Police'),
 					   ('Deputy Inspector General of Police', 'Deputy Inspector General of Police'),
